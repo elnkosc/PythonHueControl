@@ -1,5 +1,6 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
+import json
 
 
 class SceneAppData(HueObject):
@@ -41,7 +42,7 @@ class SceneLightState:
             result["effect"] = self.effect
         if self.transitiontime is not None:
             result["transitiontime"] = self.transitiontime
-        return str(result).replace("True", "true").replace("False", "false")
+        return json.dumps(result)
 
 
 class SceneLightStateList(HueObject):
@@ -69,7 +70,7 @@ class Scene(HueObject):
 
     @name.setter
     def name(self, name):
-        self.set_data("", f"{{\"name\": \"{name}\"}}")
+        self.set(name=name)
 
     @property
     def type(self):
@@ -85,7 +86,7 @@ class Scene(HueObject):
 
     @lights.setter
     def lights(self, lights):
-        self.set_data("", f"{{\"lights\": {lights}}}")
+        self.set(lights=lights)
 
     @property
     def owner(self):
@@ -114,3 +115,11 @@ class Scene(HueObject):
     @property
     def version(self):
         return map_from_dict(self.raw, "version")
+
+    def set(self, name=None, lights=None):
+        val = {}
+        if name is not None:
+            val["name"] = name
+        if lights is not None:
+            val["lights"] = lights
+        self.set_data("", json.dumps(val))

@@ -1,5 +1,6 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
+import json
 
 
 class SensorState(HueObject):
@@ -9,10 +10,13 @@ class SensorState(HueObject):
 
     @presence.setter
     def presence(self, presence):
-        if presence:
-            self.set_data("state", f"{{\"presence\": true}}")
-        else:
-            self.set_data("state", f"{{\"presence\": false}}")
+        self.set(presence=presence)
+
+    def set(self, presence=None):
+        val = {}
+        if presence is not None:
+            val["presence"] = presence
+        self.set_data("state", json.dumps(val))
 
 
 class SensorConfig(HueObject):
@@ -22,10 +26,7 @@ class SensorConfig(HueObject):
 
     @on.setter
     def on(self, on):
-        if on:
-            self.set_data("config", f"{{\"on\": true}}")
-        else:
-            self.set_data("config", f"{{\"on\": false}}")
+        self.set(on=on)
 
     @property
     def reachable(self):
@@ -34,6 +35,12 @@ class SensorConfig(HueObject):
     @property
     def battery(self):
         return map_from_dict(self.raw, "battery")
+
+    def set(self, on=None):
+        val = {}
+        if on is not None:
+            val["on"] = on
+        self.set_data("config", json.dumps(val))
 
 
 class Sensor(HueObject):
@@ -53,7 +60,7 @@ class Sensor(HueObject):
 
     @name.setter
     def name(self, name):
-        self.set_data("", f"{{\"name\": \"{name}\"}}")
+        self.set(name=name)
 
     @property
     def type(self):
@@ -78,3 +85,9 @@ class Sensor(HueObject):
     @property
     def recycle(self):
         return map_from_dict(self.raw, "recycle")
+
+    def set(self, name=None):
+        val = {}
+        if name is not None:
+            val["name"] = name
+        self.set_data("", json.dumps(val))

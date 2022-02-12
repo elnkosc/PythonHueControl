@@ -1,5 +1,6 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
+import json
 
 
 class GroupState(HueObject):
@@ -19,10 +20,7 @@ class GroupAction(HueObject):
 
     @on.setter
     def on(self, on):
-        if on:
-            self.set_data("action", f"{{\"on\": true}}")
-        else:
-            self.set_data("action", f"{{\"on\": false}}")
+        self.set(on=on)
 
     @property
     def bri(self):
@@ -30,7 +28,7 @@ class GroupAction(HueObject):
 
     @bri.setter
     def bri(self, bri):
-        self.set_data("action", f"{{\"bri\": {bri}}}")
+        self.set(bri=bri)
 
     @property
     def hue(self):
@@ -38,7 +36,7 @@ class GroupAction(HueObject):
 
     @hue.setter
     def hue(self, hue):
-        self.set_data("action", f"{{\"hue\": {hue}}}")
+        self.set(hue=hue)
 
     @property
     def sat(self):
@@ -46,7 +44,7 @@ class GroupAction(HueObject):
 
     @sat.setter
     def sat(self, sat):
-        self.set_data("action", f"{{\"sat\": {sat}}}")
+        self.set(sat=sat)
 
     @property
     def xy(self):
@@ -54,7 +52,7 @@ class GroupAction(HueObject):
 
     @xy.setter
     def xy(self, xy):
-        self.set_data("action", f"{{\"xy\": {xy}}}")
+        self.set(xy=xy)
 
     @property
     def ct(self):
@@ -62,7 +60,7 @@ class GroupAction(HueObject):
 
     @ct.setter
     def ct(self, ct):
-        self.set_data("action", f"{{\"ct\": {ct}}}")
+        self.set(ct=ct)
 
     @property
     def alert(self):
@@ -70,7 +68,7 @@ class GroupAction(HueObject):
 
     @alert.setter
     def alert(self, alert):
-        self.set_data("action", f"{{\"alert\": \"{alert}\"}}")
+        self.set(alert=alert)
 
     @property
     def effect(self):
@@ -78,7 +76,7 @@ class GroupAction(HueObject):
 
     @effect.setter
     def effect(self, effect):
-        self.set_data("action", f"{{\"effect\": \"{effect}\"}}")
+        self.set(effect=effect)
 
     @property
     def transitiontime(self):
@@ -86,7 +84,7 @@ class GroupAction(HueObject):
 
     @transitiontime.setter
     def transitiontime(self, transitiontime):
-        self.set_data("action", f"{{\"transitiontime\": {transitiontime}}}")
+        self.set(transitiontime=transitiontime)
 
     @property
     def scene(self):
@@ -94,7 +92,7 @@ class GroupAction(HueObject):
 
     @scene.setter
     def scene(self, scene):
-        self.set_data("action", f"{{\"scene\": \"{scene}\"}}")
+        self.set(scene=scene)
 
     @property
     def bri_inc(self):
@@ -102,7 +100,7 @@ class GroupAction(HueObject):
 
     @bri_inc.setter
     def bri_inc(self, bri_inc):
-        self.set_data("action", f"{{\"bri_inc\": {bri_inc}}}")
+        self.set(bri_inc=bri_inc)
 
     @property
     def hue_inc(self):
@@ -110,7 +108,7 @@ class GroupAction(HueObject):
 
     @hue_inc.setter
     def hue_inc(self, hue_inc):
-        self.set_data("action", f"{{\"hue_inc\": {hue_inc}}}")
+        self.set(hue_inc=hue_inc)
 
     @property
     def sat_inc(self):
@@ -118,7 +116,7 @@ class GroupAction(HueObject):
 
     @sat_inc.setter
     def sat_inc(self, sat_inc):
-        self.set_data("action", f"{{\"sat_inc\": {sat_inc}}}")
+        self.set(sat_inc=sat_inc)
 
     @property
     def xy_inc(self):
@@ -126,7 +124,7 @@ class GroupAction(HueObject):
 
     @xy_inc.setter
     def xy_inc(self, xy_inc):
-        self.set_data("action", f"{{\"xy_inc\": {xy_inc}}}")
+        self.set(xy_inc=xy_inc)
 
     @property
     def ct_inc(self):
@@ -134,7 +132,42 @@ class GroupAction(HueObject):
 
     @ct_inc.setter
     def ct_inc(self, ct_inc):
-        self.set_data("action", f"{{\"ct_inc\": {ct_inc}}}")
+        self.set(ct_inc=ct_inc)
+
+    def set(self, on=None, bri=None, hue=None, sat=None, xy=None, ct=None, alert=None, effect=None, transitiontime=None,
+            scene=None, bri_inc=None, hue_inc=None, sat_inc=None, xy_inc=None, ct_inc=None):
+        val = {}
+        if on is not None:
+            val["on"] = on
+        if bri is not None:
+            val["bri"] = bri
+        if hue is not None:
+            val["hue"] = hue
+        if sat is not None:
+            val["sat"] = sat
+        if xy is not None:
+            val["xy"] = xy
+        if ct is not None:
+            val["ct"] = ct
+        if alert is not None:
+            val["alert"] = alert
+        if effect is not None:
+            val["effect"] = effect
+        if transitiontime is not None:
+            val["transitiontime"] = transitiontime
+        if scene is not None:
+            val["scene"] = scene
+        if bri_inc is not None:
+            val["bri_inc"] = bri_inc
+        if hue_inc is not None:
+            val["hue_inc"] = hue_inc
+        if sat_inc is not None:
+            val["sat_inc"] = sat_inc
+        if xy_inc is not None:
+            val["xy_inc"] = xy_inc
+        if ct_inc is not None:
+            val["ct_inc"] = ct_inc
+        self.set_data("action", json.dumps(val))
 
 
 class GroupPresence(HueObject):
@@ -210,7 +243,7 @@ class Group(HueObject):
 
     @name.setter
     def name(self, name):
-        self.set_data("", f"{{\"name\": \"{name}\"}}")
+        self.set(name=name)
 
     @property
     def type(self):
@@ -222,7 +255,7 @@ class Group(HueObject):
 
     @lights.setter
     def lights(self, lights):
-        self.set_data("", f"{{\"lights\": {lights}}}")
+        self.set(lights=lights)
 
     @property
     def sensors(self):
@@ -230,7 +263,7 @@ class Group(HueObject):
 
     @sensors.setter
     def sensors(self, sensors):
-        self.set_data("", f"{{\"sensors\": {sensors}}}")
+        self.set(sensors=sensors)
 
     @property
     def modelid(self):
@@ -246,7 +279,7 @@ class Group(HueObject):
 
     @group_class.setter
     def group_class(self, group_class):
-        self.set_data("", f"{{\"class\": \"{group_class}\"}}")
+        self.set(group_class=group_class)
 
     @property
     def recycle(self):
@@ -254,13 +287,24 @@ class Group(HueObject):
 
     @recycle.setter
     def recycle(self, recycle):
-        if recycle:
-            self.set_data("", f"{{\"recycle\": true}}")
-        else:
-            self.set_data("", f"{{\"recycle\": false}}")
+        self.set(recycle=recycle)
 
     def switch_on(self):
         self.action.on = True
 
     def switch_off(self):
         self.action.on = False
+
+    def set(self, name=None, lights=None, sensors=None, group_class=None, recycle=None):
+        val = {}
+        if name is not None:
+            val["name"] = name
+        if lights is not None:
+            val["lights"] = lights
+        if sensors is not None:
+            val["sensors"] = sensors
+        if group_class is not None:
+            val["class"] = group_class
+        if recycle is not None:
+            val["recycle"] = recycle
+        self.set_data("", json.dumps(val))

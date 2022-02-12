@@ -1,5 +1,6 @@
 import requests
 import time
+import json
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
 from pythonhuecontrol.v1 import scan_new
@@ -9,6 +10,26 @@ from pythonhuecontrol.v1.sensor import Sensor
 from pythonhuecontrol.v1.rule import Rule
 from pythonhuecontrol.v1.scene import Scene
 from pythonhuecontrol.v1.schedule import Schedule
+
+
+def create_bridge_user(uri, device_type, generate_client_key=False, wait_time=60):
+    seconds = 0
+    username = None
+    clientkey = None
+    while seconds < wait_time and username is None:
+        time.sleep(1)
+        seconds += 1
+
+        if generate_client_key:
+            req = requests.post(uri, data=f"{{\"devicetype\": \"{device_type}\", \"generateclientkey\": true}}")
+        else:
+            req = requests.post(uri, data=f"{{\"devicetype\": \"{device_type}\"}}")
+
+        if req.status_code == 200:
+            username = map_from_dict(req.json()[0], "success", "username")
+            clientkey = map_from_dict(req.json()[0], "success", "clientkey")
+
+    return username, clientkey
 
 
 class Backup(HueObject):
@@ -80,10 +101,7 @@ class SWUpdate(HueObject):
 
     @checkforupdate.setter
     def checkforupdate(self, checkforupdate):
-        if checkforupdate:
-            self.set_data("", f"{{\"swupdate\": {{\"checkforupdate\": true}}}}")
-        else:
-            self.set_data("", f"{{\"swupdate\": {{\"checkforupdate\": false}}}}")
+        self.set(checkforupdate=checkforupdate)
 
     @property
     def updatestate(self):
@@ -95,10 +113,7 @@ class SWUpdate(HueObject):
 
     @notify.setter
     def notify(self, notify):
-        if notify:
-            self.set_data("", f"{{\"swupdate\": {{\"notify\": true}}}}")
-        else:
-            self.set_data("", f"{{\"swupdate\": {{\"notify\": false}}}}")
+        self.set(notify=notify)
 
     @property
     def url(self):
@@ -106,7 +121,7 @@ class SWUpdate(HueObject):
 
     @url.setter
     def url(self, url):
-        self.set_data("", f"{{\"swupdate\": {{\"url\": \"{url}\"}}}}")
+        self.set(url=url)
 
     @property
     def text(self):
@@ -114,7 +129,19 @@ class SWUpdate(HueObject):
 
     @text.setter
     def text(self, text):
-        self.set_data("", f"{{\"swupdate\": {{\"text\": \"{text}\"}}}}")
+        self.set(text=text)
+
+    def set(self, checkforupdate=None, notify=None, url=None, text=None):
+        val = {"swupdate": {}}
+        if checkforupdate is not None:
+            val["swupdate"]["checkforupdate"] = checkforupdate
+        if notify is not None:
+            val["swupdate"]["notify"] = notify
+        if url is not None:
+            val["swupdate"]["url"] = url
+        if text is not None:
+            val["swupdate"]["text"] = text
+        self.set_data("", json.dumps(val))
 
 
 class SWUpdate2(HueObject):
@@ -138,10 +165,7 @@ class SWUpdate2(HueObject):
 
     @checkforupdate.setter
     def checkforupdate(self, checkforupdate):
-        if checkforupdate:
-            self.set_data("", f"{{\"swupdate2\": {{\"checkforupdate\": true}}}}")
-        else:
-            self.set_data("", f"{{\"swupdate2\": {{\"checkforupdate\": false}}}}")
+        self.set(checkforupdate=checkforupdate)
 
     @property
     def state(self):
@@ -153,10 +177,7 @@ class SWUpdate2(HueObject):
 
     @install.setter
     def install(self, install):
-        if install:
-            self.set_data("", f"{{\"swupdate2\": {{\"install\": true}}}}")
-        else:
-            self.set_data("", f"{{\"swupdate2\": {{\"install\": false}}}}")
+        self.set(install=install)
 
     @property
     def lastchange(self):
@@ -165,6 +186,14 @@ class SWUpdate2(HueObject):
     @property
     def lastinstall(self):
         return map_from_dict(self.raw, "lastinstall")
+
+    def set(self, checkforupdate=None, install=None):
+        val = {"swupdate2": {}}
+        if checkforupdate is not None:
+            val["swupdate2"]["checkforupdate"] = checkforupdate
+        if install is not None:
+            val["swupdate2"]["install"] = install
+        self.set_data("", json.dumps(val))
 
 
 class BridgeConfig(HueObject):
@@ -188,7 +217,7 @@ class BridgeConfig(HueObject):
 
     @name.setter
     def name(self, name):
-        self.set_data("", f"{{\"name\": \"{name}\"}}")
+        self.set(name=name)
 
     @property
     def whitelist(self):
@@ -212,7 +241,7 @@ class BridgeConfig(HueObject):
 
     @proxyaddress.setter
     def proxyaddress(self, proxyaddress):
-        self.set_data("", f"{{\"proxyaddress\": \"{proxyaddress}\"}}")
+        self.set(proxyaddress=proxyaddress)
 
     @property
     def proxyport(self):
@@ -220,7 +249,7 @@ class BridgeConfig(HueObject):
 
     @proxyport.setter
     def proxyport(self, proxyport):
-        self.set_data("", f"{{\"proxyport\": {proxyport}}}")
+        self.set(proxyport=proxyport)
 
     @property
     def linkbutton(self):
@@ -228,10 +257,7 @@ class BridgeConfig(HueObject):
 
     @linkbutton.setter
     def linkbutton(self, linkbutton):
-        if linkbutton:
-            self.set_data("", f"{{\"linkbutton\": true}}")
-        else:
-            self.set_data("", f"{{\"linkbutton\": false}}")
+        self.set(linkbutton=linkbutton)
 
     @property
     def ipaddress(self):
@@ -239,7 +265,7 @@ class BridgeConfig(HueObject):
 
     @ipaddress.setter
     def ipaddress(self, ipaddress):
-        self.set_data("", f"{{\"ipaddress\": \"{ipaddress}\"}}")
+        self.set(ipaddress=ipaddress)
 
     @property
     def mac(self):
@@ -251,7 +277,7 @@ class BridgeConfig(HueObject):
 
     @netmask.setter
     def netmask(self, netmask):
-        self.set_data("", f"{{\"netmask\": \"{netmask}\"}}")
+        self.set(netmask=netmask)
 
     @property
     def gateway(self):
@@ -259,7 +285,7 @@ class BridgeConfig(HueObject):
 
     @gateway.setter
     def gateway(self, gateway):
-        self.set_data("", f"{{\"gateway\": \"{gateway}\"}}")
+        self.set(gateway=gateway)
 
     @property
     def dhcp(self):
@@ -267,10 +293,7 @@ class BridgeConfig(HueObject):
 
     @dhcp.setter
     def dhcp(self, dhcp):
-        if dhcp:
-            self.set_data("", f"{{\"dhcp\": true}}")
-        else:
-            self.set_data("", f"{{\"dhcp\": false}}")
+        self.set(dhcp=dhcp)
 
     @property
     def portalservices(self):
@@ -282,7 +305,7 @@ class BridgeConfig(HueObject):
 
     @utc.setter
     def utc(self, utc):
-        self.set_data("", f"{{\"UTC\": \"{utc}\"}}")
+        self.set(utc=utc)
 
     @property
     def localtime(self):
@@ -294,7 +317,7 @@ class BridgeConfig(HueObject):
 
     @timezone.setter
     def timezone(self, timezone):
-        self.set_data("", f"{{\"timezone\": \"{timezone}\"}}")
+        self.set(timezone=timezone)
 
     @property
     def zigbeechannel(self):
@@ -302,7 +325,7 @@ class BridgeConfig(HueObject):
 
     @zigbeechannel.setter
     def zigbeechannel(self, zigbeechannel):
-        self.set_data("", f"{{\"zigbeechannel\": {zigbeechannel}}}")
+        self.set(zigbeechannel=zigbeechannel)
 
     @property
     def modelid(self):
@@ -334,10 +357,36 @@ class BridgeConfig(HueObject):
 
     @touchlink.setter
     def touchlink(self, touchlink):
-        if touchlink:
-            self.set_data("", f"{{\"touchlink\": true}}")
-        else:
-            self.set_data("", f"{{\"touchlink\": false}}")
+        self.set(touchlink=touchlink)
+
+    def set(self, name=None, proxyaddress=None, proxyport=None, linkbutton=None, ipaddress=None, netmask=None,
+            gateway=None, dhcp=None, utc=None, timezone=None, zigbeechannel=None, touchlink=None):
+        val = {}
+        if name is not None:
+            val["name"] = name
+        if proxyaddress is not None:
+            val["proxyaddress"] = proxyaddress
+        if proxyport is not None:
+            val["proxyport"] = proxyport
+        if linkbutton is not None:
+            val["linkbutton"] = linkbutton
+        if ipaddress is not None:
+            val["ipaddress"] = ipaddress
+        if netmask is not None:
+            val["netmask"] = netmask
+        if gateway is not None:
+            val["gateway"] = gateway
+        if dhcp is not None:
+            val["dhcp"] = dhcp
+        if utc is not None:
+            val["UTC"] = utc
+        if timezone is not None:
+            val["timezone"] = timezone
+        if zigbeechannel is not None:
+            val["zigbeechannel"] = zigbeechannel
+        if touchlink is not None:
+            val["touchlink"] = touchlink
+        self.set_data("", json.dumps(val))
 
 
 class Bridge(HueObject):
@@ -401,23 +450,6 @@ class Bridge(HueObject):
     def rule(self, rule_id):
         return Rule(rule_id, self.rules_uri + "/" + rule_id)
 
-    def create_user(self, device_type, generate_client_key=False, wait_time=60):
-        t = 0
-        while t < wait_time and self.identity is None:
-            time.sleep(1)
-            t += 1
-
-            if generate_client_key:
-                req = requests.post(self.registration_uri,
-                                    json=f"{{\"devicetype\": {device_type}, \"generateclientkey\": true}}")
-            else:
-                req = requests.post(self.registration_uri, json=f"{{\"devicetype\": {device_type}}}")
-
-            if req.status_code == 200:
-                self.identity = map_from_dict(req.json()[0], "success", "username")
-                self.clientkey = map_from_dict(req.json()[0], "success", "clientkey")
-                self.load_data()
-
     def new_sensors(self):
         return scan_new(self.new_sensors_uri)
 
@@ -433,7 +465,7 @@ class Bridge(HueObject):
         self.load_data()
 
     def create_group(self, name, lights, group_type="LightGroup", group_class="Other"):
-        req = requests.post(self.groups_uri, data={"name": name, "type": group_type,
+        req = requests.post(self.groups_uri, json={"name": name, "type": group_type,
                                                    "class": group_class, "lights": lights})
 
         if req.status_code == 200 and "success" in req.json()[0] and "id" in req.json()[0]["success"]:
@@ -443,7 +475,7 @@ class Bridge(HueObject):
 
     def create_schedule(self, name, localtime, command, description="", status="enabled",
                         autodelete="true", recycle="false"):
-        req = requests.post(self.schedules_uri, data={"name": name, "localtime": localtime, "command": command,
+        req = requests.post(self.schedules_uri, json={"name": name, "localtime": localtime, "command": command,
                                                       "description": description, "status": status,
                                                       "autodelete": autodelete, "recycle": recycle})
 
@@ -453,7 +485,7 @@ class Bridge(HueObject):
             return None
 
     def create_rule(self, name, status, conditions, actions):
-        req = requests.post(self.rules_uri, data={"name": name, "status": status,
+        req = requests.post(self.rules_uri, json={"name": name, "status": status,
                                                   "conditions": conditions, "actions": actions})
 
         if req.status_code == 200 and "success" in req.json()[0] and "id" in req.json()[0]["success"]:
@@ -466,22 +498,22 @@ class Bridge(HueObject):
             return None
 
         if group is not None:
-            req = requests.post(self.scenes_uri, data={"name": name, "recycle": recycle,
+            req = requests.post(self.scenes_uri, json={"name": name, "recycle": recycle,
                                                        "type": scene_type, "group": group})
         else:
-            req = requests.post(self.scenes_uri, data={"name": name, "recycle": recycle,
+            req = requests.post(self.scenes_uri, json={"name": name, "recycle": recycle,
                                                        "type": scene_type, "lights": lights})
 
         if req.status_code == 200 and "success" in req.json()[0] and "id" in req.json()[0]["success"]:
-            return self.rule(req.json()[0]["success"]["id"])
+            return self.scene(req.json()[0]["success"]["id"])
         else:
             return None
 
     def create_lightstates_scene(self, name, lights, appdata, lightstates):
-        req = requests.post(self.scenes_uri, data={"name": name, "lights": lights,
+        req = requests.post(self.scenes_uri, json={"name": name, "lights": lights,
                                                    "appdata": appdata, "lightstates": lightstates})
 
         if req.status_code == 200 and "success" in req.json()[0] and "id" in req.json()[0]["success"]:
-            return self.rule(req.json()[0]["success"]["id"])
+            return self.scene(req.json()[0]["success"]["id"])
         else:
             return None

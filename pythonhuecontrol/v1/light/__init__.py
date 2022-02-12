@@ -1,5 +1,6 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
+import json
 
 
 class LightState(HueObject):
@@ -9,10 +10,7 @@ class LightState(HueObject):
 
     @on.setter
     def on(self, on):
-        if on:
-            self.set_data("state", f"{{\"on\": true}}")
-        else:
-            self.set_data("state", f"{{\"on\": false}}")
+        self.set_data("state", json.dumps({"on": on}))
 
     @property
     def bri(self):
@@ -20,7 +18,7 @@ class LightState(HueObject):
 
     @bri.setter
     def bri(self, bri):
-        self.set_data("state", f"{{\"bri\": {bri}}}")
+        self.set(bri=bri)
 
     @property
     def hue(self):
@@ -28,7 +26,7 @@ class LightState(HueObject):
 
     @hue.setter
     def hue(self, hue):
-        self.set_data("state", f"{{\"hue\": {hue}}}")
+        self.set(hue=hue)
 
     @property
     def sat(self):
@@ -36,7 +34,7 @@ class LightState(HueObject):
 
     @sat.setter
     def sat(self, sat):
-        self.set_data("state", f"{{\"sat\": {sat}}}")
+        self.set(sat=sat)
 
     @property
     def xy(self):
@@ -44,7 +42,7 @@ class LightState(HueObject):
 
     @xy.setter
     def xy(self, xy):
-        self.set_data("state", f"{{\"xy\": {xy}}}")
+        self.set(xy=xy)
 
     @property
     def ct(self):
@@ -52,7 +50,7 @@ class LightState(HueObject):
 
     @ct.setter
     def ct(self, ct):
-        self.set_data("state", f"{{\"ct\": {ct}}}")
+        self.set(ct=ct)
 
     @property
     def alert(self):
@@ -60,7 +58,7 @@ class LightState(HueObject):
 
     @alert.setter
     def alert(self, alert):
-        self.set_data("state", f"{{\"alert\": \"{alert}\"}}")
+        self.set(alert=alert)
 
     @property
     def effect(self):
@@ -68,7 +66,7 @@ class LightState(HueObject):
 
     @effect.setter
     def effect(self, effect):
-        self.set_data("state", f"{{\"effect\": \"{effect}\"}}")
+        self.set(effect=effect)
 
     @property
     def colormode(self):
@@ -76,7 +74,7 @@ class LightState(HueObject):
 
     @colormode.setter
     def colormode(self, colormode):
-        self.set_data("state", f"{{\"colormode\": \"{colormode}\"}}")
+        self.set(colormode=colormode)
 
     @property
     def reachable(self):
@@ -84,10 +82,32 @@ class LightState(HueObject):
 
     @reachable.setter
     def reachable(self, reachable):
-        if reachable:
-            self.set_data("state", f"{{\"reachable\": true}}")
-        else:
-            self.set_data("state", f"{{\"reachable\": false}}")
+        self.set(reachable=reachable)
+
+    def set(self, on=None, bri=None, hue=None, sat=None, xy=None, ct=None, alert=None, effect=None, colormode=None,
+            reachable=None):
+        val = {}
+        if on is not None:
+            val["on"] = on
+        if bri is not None:
+            val["bri"] = bri
+        if hue is not None:
+            val["hue"] = hue
+        if sat is not None:
+            val["sat"] = sat
+        if xy is not None:
+            val["xy"] = xy
+        if ct is not None:
+            val["ct"] = ct
+        if alert is not None:
+            val["alert"] = alert
+        if effect is not None:
+            val["effect"] = effect
+        if colormode is not None:
+            val["colormode"] = colormode
+        if reachable is not None:
+            val["reachable"] = reachable
+        self.set_data("state", json.dumps(val))
 
 
 class Light(HueObject):
@@ -105,7 +125,7 @@ class Light(HueObject):
 
     @name.setter
     def name(self, name):
-        self.set_data("", f"{{\"name\": \"{name}\"}}")
+        self.set(name=name)
 
     @property
     def type(self):
@@ -154,3 +174,9 @@ class Light(HueObject):
             self.switch_off()
         else:
             self.switch_on()
+
+    def set(self, name=None):
+        val = {}
+        if name is not None:
+            val["name"] = name
+        self.set_data("", json.dumps(val))

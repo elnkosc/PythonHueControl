@@ -1,5 +1,6 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
+import json
 
 
 class RuleAction:
@@ -23,7 +24,7 @@ class Rule(HueObject):
 
     @name.setter
     def name(self, name):
-        self.set_data("", f"{{\"name\": \"{name}\"}}")
+        self.set(name=name)
 
     @property
     def owner(self):
@@ -47,7 +48,7 @@ class Rule(HueObject):
 
     @status.setter
     def status(self, status):
-        self.set_data("", f"{{\"status\": \"{status}\"}}")
+        self.set(status=status)
 
     @property
     def conditions(self):
@@ -64,7 +65,7 @@ class Rule(HueObject):
                 condition_list[-1]["operator"] = condition.operator
             if condition.body is not None:
                 condition_list[-1]["value"] = condition.value
-        self.set_data("", f"{{\"conditions\": {condition_list}}}")
+        self.set(conditions=condition_list)
 
     @property
     def actions(self):
@@ -81,4 +82,16 @@ class Rule(HueObject):
                 action_list[-1]["method"] = action.method
             if action.body is not None:
                 action_list[-1]["body"] = action.body
-        self.set_data("", f"{{\"actions\": {action_list}}}")
+        self.set(actions=action_list)
+
+    def set(self, name=None, status=None, conditions=None, actions=None):
+        val = {}
+        if name is not None:
+            val["name"] = name
+        if status is not None:
+            val["status"] = status
+        if conditions is not None:
+            val["conditions"] = conditions
+        if actions is not None:
+            val["actions"] = actions
+        self.set_data("", json.dumps(val))

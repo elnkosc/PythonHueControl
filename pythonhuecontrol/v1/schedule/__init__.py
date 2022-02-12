@@ -1,5 +1,6 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
+import json
 
 
 class ScheduleCommand(HueObject):
@@ -9,7 +10,7 @@ class ScheduleCommand(HueObject):
 
     @address.setter
     def address(self, address):
-        self.set_data("", f"{{\"command\": {{\"address\": \"{address}\"}}}}")
+        self.set(address=address)
 
     @property
     def method(self):
@@ -17,7 +18,7 @@ class ScheduleCommand(HueObject):
 
     @method.setter
     def method(self, method):
-        self.set_data("", f"{{\"command\": {{\"method\": \"{method}\"}}}}")
+        self.set(method=method)
 
     @property
     def body(self):
@@ -25,7 +26,17 @@ class ScheduleCommand(HueObject):
 
     @body.setter
     def body(self, body):
-        self.set_data("", f"{{\"command\": {{\"body\": {body}}}}}")
+        self.set(body=body)
+
+    def set(self, address=None, method=None, body=None):
+        val = {"command": {}}
+        if address is not None:
+            val["command"]["address"] = address
+        if method is not None:
+            val["command"]["method"] = method
+        if body is not None:
+            val["command"]["body"] = body
+        self.set_data("", json.dumps(val))
 
 
 class Schedule(HueObject):
@@ -43,7 +54,7 @@ class Schedule(HueObject):
 
     @name.setter
     def name(self, name):
-        self.set_data("", f"{{\"name\": \"{name}\"}}")
+        self.set(name=name)
 
     @property
     def description(self):
@@ -51,7 +62,7 @@ class Schedule(HueObject):
 
     @description.setter
     def description(self, description):
-        self.set_data("", f"{{\"description\": \"{description}\"}}")
+        self.set(description=description)
 
     @property
     def localtime(self):
@@ -59,7 +70,7 @@ class Schedule(HueObject):
 
     @localtime.setter
     def localtime(self, localtime):
-        self.set_data("", f"{{\"localtime\": \"{localtime}\"}}")
+        self.set(localtime=localtime)
 
     @property
     def starttime(self):
@@ -67,7 +78,7 @@ class Schedule(HueObject):
 
     @starttime.setter
     def starttime(self, starttime):
-        self.set_data("", f"{{\"starttime\": \"{starttime}\"}}")
+        self.set(starttime=starttime)
 
     @property
     def status(self):
@@ -75,7 +86,7 @@ class Schedule(HueObject):
 
     @status.setter
     def status(self, status):
-        self.set_data("", f"{{\"status\": \"{status}\"}}")
+        self.set(status=status)
 
     @property
     def autodelete(self):
@@ -83,7 +94,20 @@ class Schedule(HueObject):
 
     @autodelete.setter
     def autodelete(self, autodelete):
-        if autodelete:
-            self.set_data("", f"{{\"autodelete\": true}}")
-        else:
-            self.set_data("", f"{{\"autodelete\": false}}")
+        self.set(autodelete=autodelete)
+
+    def set(self, name=None, description=None, localtime=None, starttime=None, status=None, autodelete=None):
+        val = {}
+        if name is not None:
+            val["name"] = name
+        if description is not None:
+            val["description"] = description
+        if localtime is not None:
+            val["localtime"] = localtime
+        if starttime is not None:
+            val["starttime"] = starttime
+        if status is not None:
+            val["status"] = status
+        if autodelete is not None:
+            val["autodelete"] = autodelete
+        self.set_data("", json.dumps(val))
