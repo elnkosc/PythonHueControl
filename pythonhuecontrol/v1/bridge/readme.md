@@ -1,15 +1,15 @@
-#V1 - Bridge Interfaces
-##Functions
+# V1 - Bridge Interfaces
+## Functions
 - `discover_bridge()`  
   Scans the LAN for available Hue Bridges.  
   RETURNS: IP Address of a Hue Bridge if found, otherwise None.
 - `create_bridge_user(uri, device_type, generate_client_key=False, wait_time=60)`  
   Creates a username on the Hue bridge by providing the API URL of the bridge and devicetype (consists of <app name>#<device name> by convention). Optionally creates a client API key. By default user has 60 seconds to press te link button on the bridge, but this delay may be changed by the user.  
   RETURNS: Username (or None in case of failure), Client Key (None in case not requested)  
-##Classes
+## Classes
 ###`class Bridge`  
   Class containing methods for interacting with the bridge. Properties of the bridge can easily be accessed/modified by getting/setting class member values (that are implemented using getters/setters and will directly be mirrored on the bridge).
-####Member variables:
+#### Member variables:
 - `.light_ids`
 - `.group_ids`
 - `.sensor_ids`
@@ -63,7 +63,7 @@
 - `.config.swupdate2.lastinstall` (readonly)
 - `.config.swupdate2.autoinstall.on` (readonly)
 - `.config.swupdate2.autoinstall.updatetime` (readonly)  
-####Member functions:
+#### Member functions:
 - `.config.set(name=None, proxyaddress=None, proxyport=None, linkbutton=None, ipaddress=None, netmask=None, gateway=None, dhcp=None, utc=None, timezone=None, zigbeechannel=None, touchlink=None)`  
   `.swupdate.set(self, checkforupdate=None, notify=None, url=None, text=None)`  
   `.swupdate2.set(self, checkforupdate=None, install=None)`    

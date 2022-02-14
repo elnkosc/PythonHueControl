@@ -1,8 +1,8 @@
-#V1 - Light Interfaces
-##Classes
+# V1 - Light Interfaces
+## Classes
 ### `class Light`  
   Class containing methods for interacting with a light. Properties of the light can easily be accessed/modified by getting/setting class member values (that are implemented using getters/setters and will directly be mirrored on the bridge).
-####Member variables:
+#### Member variables:
 - `.name` (read/write)
 - `.type` (readonly)
 - `.modelid` (readonly)
@@ -23,7 +23,7 @@
 - `.state.effect` (read/write)
 - `.state.colormode` (read/write)
 - `.state.reachable` (read/write)  
-####Member functions:
+#### Member functions:
 - `.set(name=None)`
 - `.state.set(on=None, bri=None, hue=None, sat=None, xy=None, ct=None, alert=None, effect=None, colormode=None, reachable=None)`  
   Methods to set multiple values in operation. When setting multiple parameters, this method will only make a single REST call in comparison to using the member variables directly. Each assignment will result in a separate REST call.  

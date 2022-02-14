@@ -1,7 +1,7 @@
-#PythonHueControl
+# PythonHueControl
 The most **complete**, yet **simple** to use, Python library for Philips Hue control supporting both version 1 and 2 of the API.
 
-##Overview
+## Overview
 This Python package contains the classes and functions to interface with the Philips Hue bridge. It consists of the following files:
 * pythonhuecontrol - generic definitions applicable to both v1 and v2 of the API
     * v1 - generic definitions for v1 of the API only

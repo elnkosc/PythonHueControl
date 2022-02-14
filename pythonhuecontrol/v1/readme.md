@@ -1,4 +1,5 @@
-#Basic operation - Version 1
+# Basic operation - Version 1
+## Usage
 For version 1 of the API:
 1. Discover the IPAddress of your Hue Bridge (optional/one-time).
     ```
@@ -19,3 +20,5 @@ For version 1 of the API:
          light.switch_on()
          light.bri = 200
     ```
+## More info
+https://developers.meethue.com/develop/hue-api/

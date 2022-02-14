@@ -1,8 +1,8 @@
-#V1 - Sensor Interfaces
-##Classes
+# V1 - Sensor Interfaces
+## Classes
 ### `class Sensor`  
   Class containing methods for interacting with a sensor. Properties of the sensor can easily be accessed/modified by getting/setting class member values (that are implemented using getters/setters and will directly be mirrored on the bridge).
-####Member variables:
+#### Member variables:
 - `.name` (read/write)
 - `.type` (readonly)
 - `.modelid` (readonly)
@@ -14,7 +14,7 @@
 - `.config.reachable` (readonly)
 - `.config.battery` (readonly)
 - `.state.presence` (read/write)  
-####Member functions:
+#### Member functions:
 - `.set(name=None)`
 - `.config.set(on=None)`
 - `.state.set(presence=None)`  
