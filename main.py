@@ -2,6 +2,7 @@ import time
 import random
 from pythonhuecontrol.v1.bridge import Bridge
 from pythonhuecontrol.v1.bridge import create_bridge_user
+from pythonhuecontrol.v1.bridge import discover_bridge
 
 EFFECT_DURATION = 4.0
 
@@ -10,11 +11,11 @@ if __name__ == '__main__':
                     "http://192.168.1.48/api/SB6zdKCx9eQiDvu7WzKII47MPSbqWsYCkFxM0h5r")
 
     dim_lights = []
-    for group_id in bridge.groups:
+    for group_id in bridge.group_ids:
         group = bridge.group(group_id)
         if group.name in ["Woonkamer", "Tussenkamer", "Serre", "Keuken"]:
             group.switch_on()
-            for light_id in group.lights:
+            for light_id in group.light_ids:
                 light = bridge.light(light_id)
                 if "Dimmable light" in light.type:
                     dim_lights.append([light, random.randint(0, 254), True])

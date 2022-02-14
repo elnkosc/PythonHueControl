@@ -12,6 +12,15 @@ from pythonhuecontrol.v1.scene import Scene
 from pythonhuecontrol.v1.schedule import Schedule
 
 
+def discover_bridge():
+    ipaddress = None
+    req = requests.get("https://discovery.meethue.com/")
+    json = req.json()
+    if req.status_code == 200 and len(json) > 0 and "internalipaddress" in json[0]:
+        ipaddress = json[0]["internalipaddress"]
+    return ipaddress
+
+
 def create_bridge_user(uri, device_type, generate_client_key=False, wait_time=60):
     seconds = 0
     username = None
@@ -409,27 +418,27 @@ class Bridge(HueObject):
         self.config.load_data(map_from_dict(self.raw, "config"))
 
     @property
-    def lights(self):
+    def light_ids(self):
         return map_from_dict(self.raw, "lights")
 
     @property
-    def groups(self):
+    def group_ids(self):
         return map_from_dict(self.raw, "groups")
 
     @property
-    def sensors(self):
+    def sensor_ids(self):
         return map_from_dict(self.raw, "sensors")
 
     @property
-    def scenes(self):
+    def scene_ids(self):
         return map_from_dict(self.raw, "scenes")
 
     @property
-    def rules(self):
+    def rule_ids(self):
         return map_from_dict(self.raw, "rules")
 
     @property
-    def schedules(self):
+    def schedule_ids(self):
         return map_from_dict(self.raw, "schedules")
 
     def light(self, light_id):
