@@ -33,6 +33,7 @@ def create_bridge_user(uri: str, device_type: str, generate_client_key: bool = F
         if generate_client_key:
             json_data["generateclientkey"] = True
         req = requests.post(uri, data=json.dumps(json_data))
+        print(req.json())
         if req.status_code == 200:
             username = map_from_dict(req.json()[0], "success", "username")
             clientkey = map_from_dict(req.json()[0], "success", "clientkey")

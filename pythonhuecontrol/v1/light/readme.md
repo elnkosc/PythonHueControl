@@ -8,10 +8,8 @@
 - `.modelid` (readonly)
 - `.uniqueid` (readonly)
 - `.manufacturername` (readonly)
+- `.productname` (readonly)
 - `.luminaireuniqueid` (readonly)
-- `.streaming` (readonly)
-- `.renderer` (readonly)
-- `.proxy` (readonly)
 - `.swversion` (readonly)
 - `.state.on` (read/write)
 - `.state.bri` (read/write)
@@ -22,10 +20,25 @@
 - `.state.alert` (read/write)
 - `.state.effect` (read/write)
 - `.state.colormode` (read/write)
-- `.state.reachable` (read/write)  
+- `.state.reachable` (read/write)
+- `.state.transitiontime` (write only)
+- `.state.bri_inc` (write only)
+- `.state.hue_inc` (write only)
+- `.state.sat_inc` (write only)
+- `.state.xy_inc` (write only)
+- `.state.ct_inc` (write only)
+- `.capabilities.certified` (readonly)
+- `.capabilities.control.mindimlevel` (readonly)
+- `.capabilities.control.maxlumen` (readonly)
+- `.capabilities.control.colorgamuttype` (readonly)
+- `.capabilities.control.colorgamut` (readonly)
+- `.capabilities.control.ct.min` (readonly)
+- `.capabilities.control.ct.max` (readonly)
+- `.streaming.renderer` (readonly)
+- `.streaming.proxy` (readonly)
 #### Member functions:
 - `.set(name=None)`
-- `.state.set(on=None, bri=None, hue=None, sat=None, xy=None, ct=None, alert=None, effect=None, colormode=None, reachable=None)`  
+- `.state.set(on=None, bri=None, hue=None, sat=None, xy=None, ct=None, alert=None, effect=None, colormode=None, reachable=None, transitiontime=None, bri_inc=None, hue_inc=None, sat_inc=None, xy_inc=None, ct_inc=None)`  
   Methods to set multiple values in operation. When setting multiple parameters, this method will only make a single REST call in comparison to using the member variables directly. Each assignment will result in a separate REST call.  
 - `.switch_on()`    
   Switches on the light.  

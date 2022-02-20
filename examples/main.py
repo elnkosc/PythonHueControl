@@ -1,65 +1,80 @@
 import time
 import random
-from datetime import datetime
 from pythonhuecontrol.v1.bridge import Bridge
-from pythonhuecontrol.v1 import map_from_dict
 from pythonhuecontrol.v1.bridge import create_bridge_user
 from pythonhuecontrol.v1.bridge import discover_bridge
-from pythonhuecontrol.v1.scene import SceneLightState
-
-EFFECT_DURATION = 4.0
 
 if __name__ == '__main__':
-    bridge = Bridge("SB6zdKCx9eQiDvu7WzKII47MPSbqWsYCkFxM0h5r",
-                    "http://192.168.1.48/api/SB6zdKCx9eQiDvu7WzKII47MPSbqWsYCkFxM0h5r")
+    ip = discover_bridge()
+    if len(ip) > 0:
+        print("Found bridge at address: ", ip)
+    else:
+        print("Could not find bridge")
+        exit(1)
 
-    print(bridge.config.name)
-    s = bridge.scene("zhUd2vUGaSJ9Nb7")
-    print(s.name)
-    scl = SceneLightState(bri=254)
-    s.lightstates["4"] = scl
-    print(s.lightstates["4"].bri)
-    exit(1)
-
-    dim_lights = []
-    for group_id in bridge.group_ids:
-        group = bridge.group(group_id)
-        if group.name in ["Woonkamer", "Tussenkamer", "Serre", "Keuken"]:
-            group.switch_on()
-            for light_id in group.lights:
-                light = bridge.light(light_id)
-                if "Dimmable light" in light.type:
-                    dim_lights.append([light, random.randint(0, 254), True])
-
-    y = map(lambda x: x[0].name, dim_lights)
-    print(list(y))
-    exit(1)
-
-    n = 10
-    step = 30
-    while n > 0:
-        start = time.time()
-        for i in range(0, 255, step):
-            for light in dim_lights:
-                light[0].state.bri = light[1]
-                if light[2]:
-                    light[1] += step
-                    if light[1] > 254:
-                        light[1] = 254
-                        light[2] = False
-                else:
-                    light[1] -= step
-                    if light[1] < 0:
-                        light[1] = 0
-                        light[2] = True
-
-        stop = time.time()
-        print("step: ", step, " duration: ", stop-start)
-        if stop - start > EFFECT_DURATION:
-            if step < 125:
-                step += 2
+    username = input("Please provide user ID of bridge (or leave empty to create new user: ")
+    if len(username) == 0:
+        print("Please push link button on bridge...")
+        username, clientkey = create_bridge_user("http://" + ip + "/api", "PythonHueControl#TestApp")
+        if username is not None:
+            print("Username: ", username)
         else:
-            if step > 1:
-                step -= 2
+            print("Could not create user")
+            exit(1)
 
-        n -= 1
+    bridge = Bridge(username, "http://" + ip + "/api/" + username)
+    print("\nConnected to bridge:", bridge.config.name)
+    print("Software Version   :", bridge.config.swversion)
+    print("API Version        :", bridge.config.apiversion)
+
+    print("\nConnected Lights (", len(bridge.light_ids),"):", sep="")
+    light_list = []
+    for light_id in bridge.light_ids:
+        light_list.append(bridge.light(light_id))
+        print(light_list[-1].identity, " - ", light_list[-1].type, ", ", light_list[-1].name, sep="")
+
+    print("\nDefined Groups (", len(bridge.group_ids), "):", sep="")
+    group_list = []
+    for group_id in bridge.group_ids:
+        group_list.append(bridge.group(group_id))
+        print(group_list[-1].identity, " - ", group_list[-1].type, ", ", group_list[-1].name, sep="")
+
+    print("\nConnected Sensors (", len(bridge.sensor_ids), "):", sep="")
+    sensor_list = []
+    for sensor_id in bridge.sensor_ids:
+        sensor_list.append(bridge.sensor(sensor_id))
+        print(sensor_list[-1].identity, " - ", sensor_list[-1].type, ", ", sensor_list[-1].name, sep="")
+
+    print("\nDefined Scenes (", len(bridge.scene_ids), "):", sep="")
+    scene_list = []
+    for scene_id in bridge.scene_ids:
+        scene_list.append(bridge.scene(scene_id))
+        print(scene_list[-1].identity, " - ", scene_list[-1].type, ", ", scene_list[-1].name, sep="")
+
+    print("\nDefined Rules (", len(bridge.rule_ids), "):", sep="")
+    rule_list = []
+    for rule_id in bridge.rule_ids:
+        rule_list.append(bridge.rule(rule_id))
+        print(rule_list[-1].identity, " - ", rule_list[-1].name, sep="")
+
+    print("\nDefined Schedules (", len(bridge.schedule_ids), "):", sep="")
+    schedule_list = []
+    for schedule_id in bridge.schedule_ids:
+        schedule_list.append(bridge.schedule(schedule_id))
+        print(schedule_list[-1].identity, " - ", schedule_list[-1].name, " - ", schedule_list[-1].description, sep="")
+
+    input("Press ENTER to start random light effects on randomly selected lights (for 1 minute)...")
+    sec = 0
+    while sec < 60:
+        time.sleep(1)
+        light = light_list[random.randint(0, len(light_list)-1)]
+        print(light.name, "-", light.productname, "-", light.manufacturername)
+        if "dimmable" in light.type.lower():
+            light.state.set(on=True, bri=random.randint(0, 254), transitiontime=0)
+        if "color" in light.type.lower():
+            light.state.set(on=True, xy=[random.random()*0.7, random.random()*0.8], transitiontime=0)
+        sec += 1
+
+    print("Switching all lights off")
+    for group in group_list:
+        group.switch_off()
