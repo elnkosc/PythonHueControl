@@ -83,7 +83,7 @@
   `new_lights`  
   RETURNS: new lights/sensors found.
 - `create_group(name, lights, group_type="LightGroup", group_class="Other")`
-  `create_schedule(name, localtime, command, description="", status="enabled", autodelete="true", recycle="false")`  
+  `create_schedule(name, localtime, address, method, body, description="", status="enabled", autodelete="true", recycle="false")`  
   `create_rule(name, status, conditions, actions)`  
   `create_scene(name, recycle, scene_type, lights=None, group=None)`  
   `create_lightstates_scene(name, lights, appdata, lightstates)`  

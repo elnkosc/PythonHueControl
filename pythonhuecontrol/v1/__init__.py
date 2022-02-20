@@ -3,7 +3,7 @@ import json
 
 
 # get item from dictionary multiple levels deep
-def map_from_dict(dictionary, *items, default=None):
+def map_from_dict(dictionary: dict, *items: str, default: object = None):
     d = dictionary
     for item in items:
         if item not in d:
@@ -18,7 +18,7 @@ def map_from_dict(dictionary, *items, default=None):
 
 
 # scan for new hue-devices using provided uri
-def scan_new(scan_uri):
+def scan_new(scan_uri: str) -> list:
     new_items = []
     req = requests.get(scan_uri)
     if req.status_code == 200:
@@ -29,44 +29,73 @@ def scan_new(scan_uri):
 
 
 class HueObject:
-    def __init__(self, identity, uri):
-        self.identity = identity
-        self.uri = uri
-        self.raw = None
+    def __init__(self, identity: str, uri: str) -> None:
+        self._identity = identity
+        self._uri = uri
+        self._raw = None
+        self._response_status_code = 0
+        self._response_json = None
+        self._response_message = ""
         self.load_data()
 
-    def load_data(self, raw=None):
-        if raw is not None:
-            self.raw = raw
-        else:
-            req = requests.get(self.uri)
-            if req.status_code != 200 or isinstance(req.json(), list):
-                if "error" in req.json()[0] and "description" in req.json()[0]["error"]:
-                    raise Exception(req.json()[0]["error"]["description"])
-                else:
-                    raise Exception("Error loading data")
-            self.raw = req.json()
+    @property
+    def identity(self):
+        return self._identity
 
-    def set_data(self, category, data, reload=True):
-        requests.put(self.uri + "/" + category, data=data)
-        if reload:
+    # parse response from requests.response object and return whether REST call was successful
+    # in case of successful API call, if ID is included in the response, _response_message holds the ID
+    def parse_response(self, response: requests.Response) -> bool:
+        self._response_status_code = response.status_code
+        self._response_json = response.json()
+        if self._response_status_code == 200:
+            if isinstance(self._response_json, list) and "success" in self._response_json[0] and \
+                    "id" in self._response_json[0]["success"]:
+                self._response_message = self._response_json[0]["success"]["id"]
+            else:
+                self._response_message = ""
+            return True
+        else:
+            if isinstance(self._response_json, list) and len(self._response_json) > 0 and \
+                    "error" in self._response_json[0] and "description" in self._response_json[0]["error"]:
+                self._response_message = self._response_json[0]["error"]["description"]
+            else:
+                self._response_message = "Unknown error"
+            return False
+
+    # get data from REST API. If provided, directly assign to prevent needing to make API call
+    def load_data(self, raw: dict = None) -> None:
+        if raw is not None:
+            self._raw = raw
+        else:
+            if not self.parse_response(requests.get(self._uri)):
+                raise Exception(self._response_message)
+            else:
+                self._raw = self._response_json
+
+    # set data through REST call; optionally reload data to sync status with actual bridge status
+    def set_data(self, category: str, data: dict, reload: bool = True) -> None:
+        if not self.parse_response(requests.put(self._uri + "/" + category, data=json.dumps(data))):
+            raise Exception(self._response_message)
+        elif reload:
             self.load_data()
 
-    def delete(self):
-        req = requests.delete(self.uri)
-        if req.status_code == 200:
-            self.raw = None
+    # delete object through REST call; after successful delete object is invalid (state reset to None)
+    def delete(self) -> None:
+        if not self.parse_response(requests.delete(self._uri)):
+            self._raw = None
+            raise Exception(self._response_message)
 
+    # pretty print object
     def __str__(self):
-        return "ID        : " + self.identity + "\n" + \
-               "URI       : " + self.uri + "\n" + \
+        return "ID        : " + self._identity + "\n" + \
+               "URI       : " + self._uri + "\n" + \
                "Data      : \n" + \
-               "None" if self.raw is None else json.dumps(self.raw, sort_keys=False, indent=4)
+               "None" if self._raw is None else json.dumps(self._raw, sort_keys=False, indent=4)
 
     # getter for items not explicitly available in subclass
-    def get_item(self, *args):
-        return map_from_dict(self.raw, *args)
+    def get_item(self, *args: str) -> object:
+        return map_from_dict(self._raw, *args)
 
     # setter for items not explicitly available in subclass
-    def set_item(self, category, item, value):
-        self.set_data(category, f"{{\"{item}\": {value}}}")
+    def set_item(self, category: str, item: str, value: object) -> None:
+        self.set_data(category, {item: value})

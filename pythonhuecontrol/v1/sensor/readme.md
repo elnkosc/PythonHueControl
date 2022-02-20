@@ -14,6 +14,9 @@
 - `.config.reachable` (readonly)
 - `.config.battery` (readonly)
 - `.state.presence` (read/write)  
+- `.state.daylight` (readonly)
+- `.state.buttonevent` (readonly)
+- `.state.lastupdated` (readonly)
 #### Member functions:
 - `.set(name=None)`
 - `.config.set(on=None)`

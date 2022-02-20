@@ -1,141 +1,142 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
-import json
 
 
 class GroupState(HueObject):
     @property
-    def all_on(self):
-        return map_from_dict(self.raw, "all_on")
+    def all_on(self) -> bool:
+        return map_from_dict(self._raw, "state", "all_on")
 
     @property
-    def any_on(self):
-        return map_from_dict(self.raw, "any_on")
+    def any_on(self) -> bool:
+        return map_from_dict(self._raw, "state", "any_on")
 
 
 class GroupAction(HueObject):
     @property
-    def on(self):
-        return map_from_dict(self.raw, "on")
+    def on(self) -> bool:
+        return map_from_dict(self._raw, "action", "on")
 
     @on.setter
-    def on(self, on):
+    def on(self, on: bool) -> None:
         self.set(on=on)
 
     @property
-    def bri(self):
-        return map_from_dict(self.raw, "bri")
+    def bri(self) -> int:
+        return map_from_dict(self._raw, "action", "bri")
 
     @bri.setter
-    def bri(self, bri):
+    def bri(self, bri: int) -> None:
         self.set(bri=bri)
 
     @property
-    def hue(self):
-        return map_from_dict(self.raw, "hue")
+    def hue(self) -> int:
+        return map_from_dict(self._raw, "action", "hue")
 
     @hue.setter
-    def hue(self, hue):
+    def hue(self, hue: int) -> None:
         self.set(hue=hue)
 
     @property
-    def sat(self):
-        return map_from_dict(self.raw, "sat")
+    def sat(self) -> int:
+        return map_from_dict(self._raw, "action", "sat")
 
     @sat.setter
-    def sat(self, sat):
+    def sat(self, sat: int) -> None:
         self.set(sat=sat)
 
     @property
-    def xy(self):
-        return map_from_dict(self.raw, "xy")
+    def xy(self) -> list[float, float]:
+        return map_from_dict(self._raw, "action", "xy")
 
     @xy.setter
-    def xy(self, xy):
+    def xy(self, xy: list[float, float]) -> None:
         self.set(xy=xy)
 
     @property
-    def ct(self):
-        return map_from_dict(self.raw, "ct")
+    def ct(self) -> int:
+        return map_from_dict(self._raw, "action", "ct")
 
     @ct.setter
-    def ct(self, ct):
+    def ct(self, ct: int) -> None:
         self.set(ct=ct)
 
     @property
-    def alert(self):
-        return map_from_dict(self.raw, "alert")
+    def alert(self) -> str:
+        return map_from_dict(self._raw, "action", "alert")
 
     @alert.setter
-    def alert(self, alert):
+    def alert(self, alert: str) -> None:
         self.set(alert=alert)
 
     @property
-    def effect(self):
-        return map_from_dict(self.raw, "effect")
+    def effect(self) -> str:
+        return map_from_dict(self._raw, "action", "effect")
 
     @effect.setter
-    def effect(self, effect):
+    def effect(self, effect: str) -> None:
         self.set(effect=effect)
 
     @property
-    def transitiontime(self):
-        return map_from_dict(self.raw, "transitiontime")
+    def transitiontime(self) -> int:
+        return map_from_dict(self._raw, "action", "transitiontime")
 
     @transitiontime.setter
-    def transitiontime(self, transitiontime):
+    def transitiontime(self, transitiontime: int) -> None:
         self.set(transitiontime=transitiontime)
 
     @property
-    def scene(self):
-        return map_from_dict(self.raw, "scene")
+    def scene(self) -> str:
+        return map_from_dict(self._raw, "action", "scene")
 
     @scene.setter
-    def scene(self, scene):
+    def scene(self, scene: str) -> None:
         self.set(scene=scene)
 
     @property
-    def bri_inc(self):
-        return map_from_dict(self.raw, "bri_inc")
+    def bri_inc(self) -> int:
+        return map_from_dict(self._raw, "action", "bri_inc")
 
     @bri_inc.setter
-    def bri_inc(self, bri_inc):
+    def bri_inc(self, bri_inc: int) -> None:
         self.set(bri_inc=bri_inc)
 
     @property
-    def hue_inc(self):
-        return map_from_dict(self.raw, "hue_inc")
+    def hue_inc(self) -> int:
+        return map_from_dict(self._raw, "action", "hue_inc")
 
     @hue_inc.setter
-    def hue_inc(self, hue_inc):
+    def hue_inc(self, hue_inc: int) -> None:
         self.set(hue_inc=hue_inc)
 
     @property
-    def sat_inc(self):
-        return map_from_dict(self.raw, "sat")
+    def sat_inc(self) -> int:
+        return map_from_dict(self._raw, "action", "sat")
 
     @sat_inc.setter
-    def sat_inc(self, sat_inc):
+    def sat_inc(self, sat_inc: int) -> None:
         self.set(sat_inc=sat_inc)
 
     @property
-    def xy_inc(self):
-        return map_from_dict(self.raw, "xy_inc")
+    def xy_inc(self) -> list[float, float]:
+        return map_from_dict(self._raw, "action", "xy_inc")
 
     @xy_inc.setter
-    def xy_inc(self, xy_inc):
+    def xy_inc(self, xy_inc: list[float, float]) -> None:
         self.set(xy_inc=xy_inc)
 
     @property
-    def ct_inc(self):
-        return map_from_dict(self.raw, "ct_inc")
+    def ct_inc(self) -> int:
+        return map_from_dict(self._raw, "action", "ct_inc")
 
     @ct_inc.setter
-    def ct_inc(self, ct_inc):
+    def ct_inc(self, ct_inc: int) -> None:
         self.set(ct_inc=ct_inc)
 
-    def set(self, on=None, bri=None, hue=None, sat=None, xy=None, ct=None, alert=None, effect=None, transitiontime=None,
-            scene=None, bri_inc=None, hue_inc=None, sat_inc=None, xy_inc=None, ct_inc=None):
+    def set(self, on: bool = None, bri: int = None, hue: int = None, sat: int = None, xy: list[float, float] = None,
+            ct: int = None, alert: str = None, effect: str = None, transitiontime: int = None, scene: str = None,
+            bri_inc: int = None, hue_inc: int = None, sat_inc: int = None, xy_inc: list[float, float] = None,
+            ct_inc: int = None) -> None:
         val = {}
         if on is not None:
             val["on"] = on
@@ -167,135 +168,136 @@ class GroupAction(HueObject):
             val["xy_inc"] = xy_inc
         if ct_inc is not None:
             val["ct_inc"] = ct_inc
-        self.set_data("action", json.dumps(val))
+        self.set_data("action", val)
 
 
 class GroupPresence(HueObject):
     @property
-    def lastupdated(self):
-        return map_from_dict(self.raw, "lastupdated")
+    def lastupdated(self) -> str:
+        return map_from_dict(self._raw, "presence", "lastupdated")
 
     @property
-    def presence(self):
-        return map_from_dict(self.raw, "presence")
+    def presence(self) -> bool:
+        return map_from_dict(self._raw, "presence", "presence")
 
     @property
-    def presence_all(self):
-        return map_from_dict(self.raw, "presence_all")
+    def presence_all(self) -> bool:
+        return map_from_dict(self._raw, "presence", "presence_all")
 
 
 class GroupLightLevel(HueObject):
     @property
-    def state(self):
-        return map_from_dict(self.raw, "state")
+    def state(self) -> dict:
+        return map_from_dict(self._raw, "lightlevel", "state")
 
     @property
-    def lastupdated(self):
-        return map_from_dict(self.raw, "lastupdated")
+    def lastupdated(self) -> str:
+        return map_from_dict(self._raw, "lightlevel", "lastupdated")
 
     @property
-    def dark(self):
-        return map_from_dict(self.raw, "dark")
+    def dark(self) -> bool:
+        return map_from_dict(self._raw, "lightlevel", "dark")
 
     @property
-    def dark_all(self):
-        return map_from_dict(self.raw, "dark_all")
+    def dark_all(self) -> bool:
+        return map_from_dict(self._raw, "lightlevel", "dark_all")
 
     @property
-    def daylight(self):
-        return map_from_dict(self.raw, "daylight")
+    def daylight(self) -> bool:
+        return map_from_dict(self._raw, "lightlevel", "daylight")
 
     @property
-    def daylight_any(self):
-        return map_from_dict(self.raw, "daylight_any")
+    def daylight_any(self) -> bool:
+        return map_from_dict(self._raw, "lightlevel", "daylight_any")
 
     @property
-    def lightlevel(self):
-        return map_from_dict(self.raw, "lightlevel")
+    def lightlevel(self) -> int:
+        return map_from_dict(self._raw, "lightlevel", "lightlevel")
 
     @property
-    def lightlevel_min(self):
-        return map_from_dict(self.raw, "lightlevel_min")
+    def lightlevel_min(self) -> int:
+        return map_from_dict(self._raw, "lightlevel", "lightlevel_min")
 
     @property
-    def lightlevel_max(self):
-        return map_from_dict(self.raw, "lightlevel_max")
+    def lightlevel_max(self) -> int:
+        return map_from_dict(self._raw, "lightlevel", "lightlevel_max")
 
 
 class Group(HueObject):
-    def __init__(self, identity, uri):
+    def __init__(self, identity: str, uri: str) -> None:
         self.state = GroupState("", uri)
         self.action = GroupAction("", uri)
         self.presence = GroupPresence("", uri)
         self.lightlevel = GroupLightLevel("", uri)
         super().__init__(identity, uri)
 
-    def load_data(self, raw=None):
+    def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)
-        self.state.load_data(map_from_dict(self.raw, "state"))
-        self.action.load_data(map_from_dict(self.raw, "action"))
-        self.presence.load_data(map_from_dict(self.raw, "presence"))
-        self.lightlevel.load_data(map_from_dict(self.raw, "lightlevel"))
+        self.state.load_data(self._raw)
+        self.action.load_data(self._raw)
+        self.presence.load_data(self._raw)
+        self.lightlevel.load_data(self._raw)
 
     @property
-    def name(self):
-        return map_from_dict(self.raw, "name")
+    def name(self) -> str:
+        return map_from_dict(self._raw, "name")
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str) -> None:
         self.set(name=name)
 
     @property
-    def type(self):
-        return map_from_dict(self.raw, "type")
+    def type(self) -> str:
+        return map_from_dict(self._raw, "type")
 
     @property
-    def lights(self):
-        return map_from_dict(self.raw, "lights")
+    def lights(self) -> list[str]:
+        return map_from_dict(self._raw, "lights")
 
     @lights.setter
-    def lights(self, lights):
+    def lights(self, lights: list[str]) -> None:
         self.set(lights=lights)
 
     @property
-    def sensors(self):
-        return map_from_dict(self.raw, "sensors")
+    def sensors(self) -> list[str]:
+        return map_from_dict(self._raw, "sensors")
 
     @sensors.setter
-    def sensors(self, sensors):
+    def sensors(self, sensors: list[str]) -> None:
         self.set(sensors=sensors)
 
     @property
-    def modelid(self):
-        return map_from_dict(self.raw, "modelid")
+    def modelid(self) -> str:
+        return map_from_dict(self._raw, "modelid")
 
     @property
-    def uniqueid(self):
-        return map_from_dict(self.raw, "uniqueid")
+    def uniqueid(self) -> str:
+        return map_from_dict(self._raw, "uniqueid")
 
     @property
-    def group_class(self):
-        return map_from_dict(self.raw, "class")
+    def group_class(self) -> str:
+        return map_from_dict(self._raw, "class")
 
     @group_class.setter
-    def group_class(self, group_class):
+    def group_class(self, group_class: str) -> None:
         self.set(group_class=group_class)
 
     @property
-    def recycle(self):
-        return map_from_dict(self.raw, "recycle")
+    def recycle(self) -> bool:
+        return map_from_dict(self._raw, "recycle")
 
     @recycle.setter
-    def recycle(self, recycle):
+    def recycle(self, recycle: bool) -> None:
         self.set(recycle=recycle)
 
-    def switch_on(self):
+    def switch_on(self) -> None:
         self.action.on = True
 
-    def switch_off(self):
+    def switch_off(self) -> None:
         self.action.on = False
 
-    def set(self, name=None, lights=None, sensors=None, group_class=None, recycle=None):
+    def set(self, name: str = None, lights: list[str] = None, sensors: list[str] = None, group_class: str = None,
+            recycle: bool = None):
         val = {}
         if name is not None:
             val["name"] = name
@@ -307,4 +309,4 @@ class Group(HueObject):
             val["class"] = group_class
         if recycle is not None:
             val["recycle"] = recycle
-        self.set_data("", json.dumps(val))
+        self.set_data("", val)

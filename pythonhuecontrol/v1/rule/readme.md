@@ -20,9 +20,15 @@
 - `.address` (read/write)
 - `.method` (read/write)
 - `.body` (read/write)
+#### Member functions:
+- `.as_dict()`
+  Method to convert object into dictionary
 ### `class RuleCondition`  
   Class containing condition info.
 #### Member variables:
 - `.address` (read/write)
 - `.operator` (read/write)
 - `.value` (read/write)
+#### Member functions:
+- `.as_dict()`
+  Method to convert object into dictionary

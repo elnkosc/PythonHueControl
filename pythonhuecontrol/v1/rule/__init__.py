@@ -1,90 +1,97 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
-import json
 
 
 class RuleAction:
-    def __init__(self, action):
+    def __init__(self, action: dict) -> None:
         self.address = map_from_dict(action, "address")
         self.method = map_from_dict(action, "method")
         self.body = map_from_dict(action, "body")
 
+    def as_dict(self) -> dict:
+        a = {}
+        if self.address is not None:
+            a["address"] = self.address
+        if self.method is not None:
+            a["method"] = self.method
+        if self.body is not None:
+            a["body"] = self.body
+        return a
+
 
 class RuleCondition:
-    def __init__(self, condition):
+    def __init__(self, condition: dict) -> None:
         self.address = map_from_dict(condition, "address")
         self.operator = map_from_dict(condition, "operator")
         self.value = map_from_dict(condition, "value")
 
+    def as_dict(self) -> dict:
+        d = {}
+        if self.address is not None:
+            d["address"] = self.address
+        if self.operator is not None:
+            d["operator"] = self.operator
+        if self.value is not None:
+            d["value"] = self.value
+        return d
+
 
 class Rule(HueObject):
     @property
-    def name(self):
-        return map_from_dict(self.raw, "name")
+    def name(self) -> str:
+        return map_from_dict(self._raw, "name")
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str) -> None:
         self.set(name=name)
 
     @property
-    def owner(self):
-        return map_from_dict(self.raw, "owner")
+    def owner(self) -> str:
+        return map_from_dict(self._raw, "owner")
 
     @property
-    def created(self):
-        return map_from_dict(self.raw, "created")
+    def created(self) -> str:
+        return map_from_dict(self._raw, "created")
 
     @property
-    def lasttriggered(self):
-        return map_from_dict(self.raw, "lasttriggered")
+    def lasttriggered(self) -> str:
+        return map_from_dict(self._raw, "lasttriggered")
 
     @property
-    def timestriggered(self):
-        return map_from_dict(self.raw, "timestriggered")
+    def timestriggered(self) -> str:
+        return map_from_dict(self._raw, "timestriggered")
 
     @property
-    def status(self):
-        return map_from_dict(self.raw, "status")
+    def status(self) -> str:
+        return map_from_dict(self._raw, "status")
 
     @status.setter
-    def status(self, status):
+    def status(self, status: str) -> None:
         self.set(status=status)
 
     @property
-    def conditions(self):
-        return [RuleCondition(condition) for condition in map_from_dict(self.raw, "conditions")]
+    def conditions(self) -> list[RuleCondition]:
+        return [RuleCondition(condition) for condition in map_from_dict(self._raw, "conditions")]
 
     @conditions.setter
-    def conditions(self, conditions):
+    def conditions(self, conditions: list[RuleCondition]) -> None:
         condition_list = []
         for condition in conditions:
-            condition_list.append({})
-            if condition.address is not None:
-                condition_list[-1]["address"] = condition.address
-            if condition.method is not None:
-                condition_list[-1]["operator"] = condition.operator
-            if condition.body is not None:
-                condition_list[-1]["value"] = condition.value
+            condition_list.append(condition.as_dict())
         self.set(conditions=condition_list)
 
     @property
-    def actions(self):
-        return [RuleAction(action) for action in map_from_dict(self.raw, "actions")]
+    def actions(self) -> list[RuleAction]:
+        return [RuleAction(action) for action in map_from_dict(self._raw, "actions")]
 
     @actions.setter
-    def actions(self, actions):
+    def actions(self, actions: list[RuleAction]) -> None:
         action_list = []
         for action in actions:
-            action_list.append({})
-            if action.address is not None:
-                action_list[-1]["address"] = action.address
-            if action.method is not None:
-                action_list[-1]["method"] = action.method
-            if action.body is not None:
-                action_list[-1]["body"] = action.body
+            action_list.append(action.as_dict())
         self.set(actions=action_list)
 
-    def set(self, name=None, status=None, conditions=None, actions=None):
+    def set(self, name: str = None, status: str = None, conditions: list[dict] = None, actions: list[dict] = None):
         val = {}
         if name is not None:
             val["name"] = name
@@ -94,4 +101,4 @@ class Rule(HueObject):
             val["conditions"] = conditions
         if actions is not None:
             val["actions"] = actions
-        self.set_data("", json.dumps(val))
+        self.set_data("", val)

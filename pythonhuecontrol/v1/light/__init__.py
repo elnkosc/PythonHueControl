@@ -1,91 +1,91 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
-import json
 
 
 class LightState(HueObject):
     @property
-    def on(self):
-        return map_from_dict(self.raw, "on")
+    def on(self) -> object:
+        return map_from_dict(self._raw, "state", "on")
 
     @on.setter
-    def on(self, on):
-        self.set_data("state", json.dumps({"on": on}))
+    def on(self, on: bool) -> None:
+        self.set(on=on)
 
     @property
-    def bri(self):
-        return map_from_dict(self.raw, "bri")
+    def bri(self) -> object:
+        return map_from_dict(self._raw, "state", "bri")
 
     @bri.setter
-    def bri(self, bri):
+    def bri(self, bri: int) -> None:
         self.set(bri=bri)
 
     @property
-    def hue(self):
-        return map_from_dict(self.raw, "hue")
+    def hue(self) -> object:
+        return map_from_dict(self._raw, "state", "hue")
 
     @hue.setter
-    def hue(self, hue):
+    def hue(self, hue: int) -> None:
         self.set(hue=hue)
 
     @property
-    def sat(self):
-        return map_from_dict(self.raw, "sat")
+    def sat(self) -> object:
+        return map_from_dict(self._raw, "state", "sat")
 
     @sat.setter
-    def sat(self, sat):
+    def sat(self, sat: int) -> None:
         self.set(sat=sat)
 
     @property
-    def xy(self):
-        return map_from_dict(self.raw, "xy")
+    def xy(self) -> object:
+        return map_from_dict(self._raw, "state", "xy")
 
     @xy.setter
-    def xy(self, xy):
+    def xy(self, xy: list[float, float]) -> None:
         self.set(xy=xy)
 
     @property
-    def ct(self):
-        return map_from_dict(self.raw, "cy")
+    def ct(self) -> object:
+        return map_from_dict(self._raw, "state", "cy")
 
     @ct.setter
-    def ct(self, ct):
+    def ct(self, ct: int) -> None:
         self.set(ct=ct)
 
     @property
-    def alert(self):
-        return map_from_dict(self.raw, "alert")
+    def alert(self) -> object:
+        return map_from_dict(self._raw, "state", "alert")
 
     @alert.setter
-    def alert(self, alert):
+    def alert(self, alert: str) -> None:
         self.set(alert=alert)
 
     @property
-    def effect(self):
-        return map_from_dict(self.raw, "effect")
+    def effect(self) -> object:
+        return map_from_dict(self._raw, "state", "effect")
 
     @effect.setter
-    def effect(self, effect):
+    def effect(self, effect: str) -> None:
         self.set(effect=effect)
 
     @property
-    def colormode(self):
-        return map_from_dict(self.raw, "colormode")
+    def colormode(self) -> object:
+        return map_from_dict(self._raw, "state", "colormode")
 
     @colormode.setter
-    def colormode(self, colormode):
+    def colormode(self, colormode: str) -> None:
         self.set(colormode=colormode)
 
     @property
-    def reachable(self):
-        return map_from_dict(self.raw, "reachable")
+    def reachable(self) -> object:
+        return map_from_dict(self._raw, "state", "reachable")
 
     @reachable.setter
-    def reachable(self, reachable):
+    def reachable(self, reachable: bool) -> None:
         self.set(reachable=reachable)
 
-    def set(self, on=None, bri=None, hue=None, sat=None, xy=None, ct=None, alert=None, effect=None, colormode=None,
-            reachable=None):
+    def set(self, on: bool = None, bri: int = None, hue: int = None, sat: int = None, xy: list[float, float] = None,
+            ct: int = None, alert: str = None, effect: str = None, colormode: str = None,
+            reachable: bool = None) -> None:
         val = {}
         if on is not None:
             val["on"] = on
@@ -107,76 +107,76 @@ class LightState(HueObject):
             val["colormode"] = colormode
         if reachable is not None:
             val["reachable"] = reachable
-        self.set_data("state", json.dumps(val))
+        self.set_data("state", val)
 
 
 class Light(HueObject):
-    def __init__(self, identity, uri):
+    def __init__(self, identity: str, uri: str) -> None:
         self.state = LightState("", uri)
         super().__init__(identity, uri)
 
-    def load_data(self, raw=None):
+    def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)
-        self.state.load_data(map_from_dict(self.raw, "state"))
+        self.state.load_data(self._raw)
 
     @property
-    def name(self):
-        return map_from_dict(self.raw, "name")
+    def name(self) -> object:
+        return map_from_dict(self._raw, "name")
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str) -> None:
         self.set(name=name)
 
     @property
-    def type(self):
-        return map_from_dict(self.raw, "type")
+    def type(self) -> object:
+        return map_from_dict(self._raw, "type")
 
     @property
-    def modelid(self):
-        return map_from_dict(self.raw, "modelid")
+    def modelid(self) -> object:
+        return map_from_dict(self._raw, "modelid")
 
     @property
-    def uniqueid(self):
-        return map_from_dict(self.raw, "uniqueid")
+    def uniqueid(self) -> object:
+        return map_from_dict(self._raw, "uniqueid")
 
     @property
-    def manufacturername(self):
-        return map_from_dict(self.raw, "manufacturername")
+    def manufacturername(self) -> object:
+        return map_from_dict(self._raw, "manufacturername")
 
     @property
-    def luminaireuniqueid(self):
-        return map_from_dict(self.raw, "luminaireuniqueid")
+    def luminaireuniqueid(self) -> object:
+        return map_from_dict(self._raw, "luminaireuniqueid")
 
     @property
-    def streaming(self):
-        return map_from_dict(self.raw, "streaming")
+    def streaming(self) -> object:
+        return map_from_dict(self._raw, "streaming")
 
     @property
-    def renderer(self):
-        return map_from_dict(self.raw, "renderer")
+    def renderer(self) -> object:
+        return map_from_dict(self._raw, "renderer")
 
     @property
-    def proxy(self):
-        return map_from_dict(self.raw, "proxy")
+    def proxy(self) -> object:
+        return map_from_dict(self._raw, "proxy")
 
     @property
-    def swversion(self):
-        return map_from_dict(self.raw, "swversion")
+    def swversion(self) -> object:
+        return map_from_dict(self._raw, "swversion")
 
-    def switch_on(self):
+    def switch_on(self) -> None:
         self.state.on = True
 
-    def switch_off(self):
+    def switch_off(self) -> None:
         self.state.on = False
 
-    def toggle(self):
+    def toggle(self) -> None:
         if self.state.on:
             self.switch_off()
         else:
             self.switch_on()
 
-    def set(self, name=None):
+    def set(self, name: str = None) -> None:
         val = {}
         if name is not None:
             val["name"] = name
-        self.set_data("", json.dumps(val))
+        self.set_data("", val)

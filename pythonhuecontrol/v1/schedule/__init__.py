@@ -1,34 +1,33 @@
 from pythonhuecontrol.v1 import HueObject
 from pythonhuecontrol.v1 import map_from_dict
-import json
 
 
 class ScheduleCommand(HueObject):
     @property
-    def address(self):
-        return map_from_dict(self.raw, "address")
+    def address(self) -> str:
+        return map_from_dict(self._raw, "command", "address")
 
     @address.setter
-    def address(self, address):
+    def address(self, address: str) -> None:
         self.set(address=address)
 
     @property
-    def method(self):
-        return map_from_dict(self.raw, "method")
+    def method(self) -> str:
+        return map_from_dict(self._raw, "command", "method")
 
     @method.setter
-    def method(self, method):
+    def method(self, method: str) -> None:
         self.set(method=method)
 
     @property
-    def body(self):
-        return map_from_dict(self.raw, "body")
+    def body(self) -> str:
+        return map_from_dict(self._raw, "command", "body")
 
     @body.setter
-    def body(self, body):
+    def body(self, body: str) -> None:
         self.set(body=body)
 
-    def set(self, address=None, method=None, body=None):
+    def set(self, address: str = None, method: str = None, body: str = None) -> None:
         val = {"command": {}}
         if address is not None:
             val["command"]["address"] = address
@@ -36,67 +35,68 @@ class ScheduleCommand(HueObject):
             val["command"]["method"] = method
         if body is not None:
             val["command"]["body"] = body
-        self.set_data("", json.dumps(val))
+        self.set_data("", val)
 
 
 class Schedule(HueObject):
-    def __init__(self, identity, uri):
+    def __init__(self, identity: str, uri: str) -> None:
         self.command = ScheduleCommand("", uri)
         super().__init__(identity, uri)
 
-    def load_data(self, raw=None):
+    def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)
-        self.command.load_data(map_from_dict(self.raw, "command"))
+        self.command.load_data(self._raw)
 
     @property
-    def name(self):
-        return map_from_dict(self.raw, "name")
+    def name(self) -> str:
+        return map_from_dict(self._raw, "name")
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str) -> None:
         self.set(name=name)
 
     @property
-    def description(self):
-        return map_from_dict(self.raw, "description")
+    def description(self) -> str:
+        return map_from_dict(self._raw, "description")
 
     @description.setter
-    def description(self, description):
+    def description(self, description: str) -> None:
         self.set(description=description)
 
     @property
-    def localtime(self):
-        return map_from_dict(self.raw, "localtime")
+    def localtime(self) -> str:
+        return map_from_dict(self._raw, "localtime")
 
     @localtime.setter
-    def localtime(self, localtime):
+    def localtime(self, localtime: str) -> None:
         self.set(localtime=localtime)
 
     @property
-    def starttime(self):
-        return map_from_dict(self.raw, "starttime")
+    def starttime(self) -> str:
+        return map_from_dict(self._raw, "starttime")
 
     @starttime.setter
-    def starttime(self, starttime):
+    def starttime(self, starttime: str) -> None:
         self.set(starttime=starttime)
 
     @property
-    def status(self):
-        return map_from_dict(self.raw, "status")
+    def status(self) -> str:
+        return map_from_dict(self._raw, "status")
 
     @status.setter
-    def status(self, status):
+    def status(self, status: str) -> None:
         self.set(status=status)
 
     @property
-    def autodelete(self):
-        return map_from_dict(self.raw, "autodelete")
+    def autodelete(self) -> bool:
+        return map_from_dict(self._raw, "autodelete")
 
     @autodelete.setter
-    def autodelete(self, autodelete):
+    def autodelete(self, autodelete: bool) -> None:
         self.set(autodelete=autodelete)
 
-    def set(self, name=None, description=None, localtime=None, starttime=None, status=None, autodelete=None):
+    def set(self, name: str = None, description: str = None, localtime: str = None, starttime: str = None,
+            status: str = None, autodelete: bool = None) -> None:
         val = {}
         if name is not None:
             val["name"] = name
@@ -110,4 +110,4 @@ class Schedule(HueObject):
             val["status"] = status
         if autodelete is not None:
             val["autodelete"] = autodelete
-        self.set_data("", json.dumps(val))
+        self.set_data("", val)
