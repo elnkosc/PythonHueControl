@@ -12,6 +12,7 @@ This Python package contains the classes and functions to interface with the Phi
       * scene - definitions for controlling scenes
       * schedule - definitions for controlling schedules
       * sensor - definitions for controlling sensors
+      * resourcelinks - definitions for controlling resourcelinks
     * v2 - UNDER CONSTRUCTION
 
 Details can be found in teh README files for the different sub-packages.  
