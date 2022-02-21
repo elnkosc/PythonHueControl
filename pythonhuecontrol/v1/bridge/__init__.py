@@ -10,6 +10,7 @@ from pythonhuecontrol.v1.sensor import Sensor
 from pythonhuecontrol.v1.rule import Rule
 from pythonhuecontrol.v1.scene import Scene
 from pythonhuecontrol.v1.schedule import Schedule
+from pythonhuecontrol.v1.resourcelinks import ResourceLinks
 
 
 def discover_bridge() -> str:
@@ -33,7 +34,6 @@ def create_bridge_user(uri: str, device_type: str, generate_client_key: bool = F
         if generate_client_key:
             json_data["generateclientkey"] = True
         req = requests.post(uri, data=json.dumps(json_data))
-        print(req.json())
         if req.status_code == 200:
             username = map_from_dict(req.json()[0], "success", "username")
             clientkey = map_from_dict(req.json()[0], "success", "clientkey")
@@ -403,6 +403,7 @@ class Bridge(HueObject):
         self.schedules_uri = uri + "/schedules"
         self.scenes_uri = uri + "/scenes"
         self.rules_uri = uri + "/rules"
+        self.resourcelinks_uri = uri + "/resourcelinks"
         self.new_lights_uri = uri + "/lights/new"
         self.new_sensors_uri = uri + "/sensors/new"
         self.clientkey = clientkey
@@ -437,6 +438,10 @@ class Bridge(HueObject):
     def schedule_ids(self) -> dict:
         return map_from_dict(self._raw, "schedules")
 
+    @property
+    def resourcelinks_ids(self) -> dict:
+        return map_from_dict(self._raw, "resourcelinks")
+
     def light(self, light_id: str) -> Light:
         return Light(light_id, self.lights_uri + "/" + light_id)
 
@@ -454,6 +459,9 @@ class Bridge(HueObject):
 
     def rule(self, rule_id: str) -> Rule:
         return Rule(rule_id, self.rules_uri + "/" + rule_id)
+
+    def resourcelinks(self, resourcelinks_id: str) -> ResourceLinks:
+        return ResourceLinks(resourcelinks_id, self.resourcelinks_uri + "/" + resourcelinks_id)
 
     def new_sensors(self) -> list:
         return scan_new(self.new_sensors_uri)
@@ -519,3 +527,23 @@ class Bridge(HueObject):
             if self._response_message == "":
                 raise Exception("Unknown Error: Scene ID unavailable")
             return self.scene(self._response_message)
+
+    def create_resourcelinks(self, name: str, description: str = None, resource_type: str = None, classid: int = None,
+                             owner: str = None, recycle: bool = None, links: list[str] = None) -> ResourceLinks:
+        json_data = {"name": name}
+        if description is not None:
+            json_data["description"] = description
+        if resource_type is not None:
+            json_data["type"] = type
+        if classid is not None:
+            json_data["classid"] = classid
+        if owner is not None:
+            json_data["owner"] = owner
+        if recycle is not None:
+            json_data["recycle"] = recycle
+        if links is not None:
+            json_data["links"] = links
+        if self.parse_response(requests.post(self.resourcelinks_uri, data=json.dumps(json_data))):
+            if self._response_message == "":
+                raise Exception("Unknown Error: Resourcelinks ID unavailable")
+            return self.resourcelinks(self._response_message)

@@ -63,6 +63,13 @@ if __name__ == '__main__':
         schedule_list.append(bridge.schedule(schedule_id))
         print(schedule_list[-1].identity, " - ", schedule_list[-1].name, " - ", schedule_list[-1].description, sep="")
 
+    print("\nDefined Resourcelinks (", len(bridge.resourcelinks_ids), "):", sep="")
+    resourcelinks_list = []
+    for resourcelinks_id in bridge.resourcelinks_ids:
+        resourcelinks_list.append(bridge.resourcelinks(resourcelinks_id))
+        print(resourcelinks_list[-1].identity, " - ", resourcelinks_list[-1].name, " - ",
+              resourcelinks_list[-1].description, sep="")
+
     input("Press ENTER to start random light effects on randomly selected lights (for 1 minute)...")
     sec = 0
     while sec < 60:
@@ -75,6 +82,6 @@ if __name__ == '__main__':
             light.state.set(on=True, xy=[random.random()*0.7, random.random()*0.8], transitiontime=0)
         sec += 1
 
-    print("Switching all lights off")
-    for group in group_list:
-        group.switch_off()
+    print("\nSwitching all lights off")
+    for light in light_list:
+        light.switch_off()

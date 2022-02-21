@@ -55,12 +55,12 @@ class SensorConfig(HueObject):
 
 
 class Sensor(HueObject):
-    def __init__(self, identity, uri):
+    def __init__(self, identity: str, uri: str) -> None:
         self.config = SensorConfig("", uri)
         self.state = SensorState("", uri)
         super().__init__(identity, uri)
 
-    def load_data(self, raw=None):
+    def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)
         self.config.load_data(self._raw)
         self.state.load_data(self._raw)
