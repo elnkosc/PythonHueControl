@@ -1,0 +1,57 @@
+# V1 - Bridge Configuration
+## Classes
+###`class Configuration`  
+  Class containing methods for interacting with the bridge configuration. Properties of the bridge can easily be accessed/modified by getting/setting class member values (that are implemented using getters/setters and will directly be mirrored on the bridge).
+#### Member variables:
+- `.name` (read/write)
+- `.whitelist` (read only)
+- `.portalstate` (read only)
+- `.apiversion` (read only)
+- `.swversion` (readonly)
+- `.proxyaddress` (read/write)
+- `.proxyport` (read/write)
+- `.linkbutton` (read/write)
+- `.ipaddress` (read/write)
+- `.mac` (readonly)
+- `.netmask` (read/write)
+- `.gateway` (read/write)
+- `.dhcp` (read/write)
+- `.portalservices` (readonly)
+- `.utc` (read/write)
+- `.localtime` (readonly)
+- `.timezone` (read/write)
+- `.zigbeechannel` (read/write)
+- `.modelid` (readonly)
+- `.bridgeid` (readonly)
+- `.factorynew` (readonly)
+- `.replacesbridgeid` (readonly)
+- `.replacesbridgeid` (readonly)
+- `.starterkitid` (readonly)
+- `.touchlink` (read/write)  
+- `.internetservices.internet` (readonly)
+- `.internetservices.remoteaccess` (readonly)
+- `.internetservices.time` (readonly)
+- `.internetservices.swupdate` (readonly)
+- `.backup.status` (readonly)
+- `.backup.errorcode` (readonly)
+- `.swupdate.checkforupdate` (read/write)
+- `.swupdate.updatestate` (readonly)
+- `.swupdate.notify` (read/write)
+- `.swupdate.url` (read/write)
+- `.swupdate.text` (read/write)
+- `.swupdate.devicetypes.bridge` (readonly)
+- `.swupdate.devicetypes.lights` (readonly)
+- `.swupdate.devicetypes.sensors` (readonly)
+- `.swupdate2.bridge` (readonly)
+- `.swupdate2.checkforupdate` (read/write)
+- `.swupdate2.state` (readonly)
+- `.swupdate2.install` (read/write)
+- `.swupdate2.lastchange` (readonly)
+- `.swupdate2.lastinstall` (readonly)
+- `.swupdate2.autoinstall.on` (readonly)
+- `.swupdate2.autoinstall.updatetime` (readonly)  
+#### Member functions:
+- `.set(name=None, proxyaddress=None, proxyport=None, linkbutton=None, ipaddress=None, netmask=None, gateway=None, dhcp=None, utc=None, timezone=None, zigbeechannel=None, touchlink=None)`  
+  `.swupdate.set(self, checkforupdate=None, notify=None, url=None, text=None)`  
+  `.swupdate2.set(self, checkforupdate=None, install=None)`    
+  Methods to set multiple values in operation. When setting multiple bridge parameters, this method will only make a single REST call in comparison to using the member variables directly. Each assignment will result in a separate REST call.  

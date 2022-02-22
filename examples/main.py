@@ -22,6 +22,7 @@ if __name__ == '__main__':
             print("Could not create user")
             exit(1)
 
+    username ="SB6zdKCx9eQiDvu7WzKII47MPSbqWsYCkFxM0h5r"
     bridge = Bridge(username, "http://" + ip + "/api/" + username)
     print("\nConnected to bridge:", bridge.config.name)
     print("Software Version   :", bridge.config.swversion)
@@ -70,7 +71,7 @@ if __name__ == '__main__':
         print(resourcelinks_list[-1].identity, " - ", resourcelinks_list[-1].name, " - ",
               resourcelinks_list[-1].description, sep="")
 
-    input("Press ENTER to start random light effects on randomly selected lights (for 1 minute)...")
+    input("\nPress ENTER to start random light effects on randomly selected lights (for 1 minute)...")
     sec = 0
     while sec < 60:
         time.sleep(1)
