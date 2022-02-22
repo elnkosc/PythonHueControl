@@ -22,7 +22,6 @@ if __name__ == '__main__':
             print("Could not create user")
             exit(1)
 
-    username ="SB6zdKCx9eQiDvu7WzKII47MPSbqWsYCkFxM0h5r"
     bridge = Bridge(username, "http://" + ip + "/api/" + username)
 
     print("\nConnected to bridge:", bridge.config.name)
