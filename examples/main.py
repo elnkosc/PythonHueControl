@@ -24,6 +24,7 @@ if __name__ == '__main__':
 
     username ="SB6zdKCx9eQiDvu7WzKII47MPSbqWsYCkFxM0h5r"
     bridge = Bridge(username, "http://" + ip + "/api/" + username)
+
     print("\nConnected to bridge:", bridge.config.name)
     print("Software Version   :", bridge.config.swversion)
     print("API Version        :", bridge.config.apiversion)
@@ -56,7 +57,7 @@ if __name__ == '__main__':
     rule_list = []
     for rule_id in bridge.rule_ids:
         rule_list.append(bridge.rule(rule_id))
-        print(rule_list[-1].identity, " - ", rule_list[-1].name, sep="")
+        print(rule_list[-1].identity, " - ", rule_list[-1].name, ", ", rule_list[-1].status, sep="")
 
     print("\nDefined Schedules (", len(bridge.schedule_ids), "):", sep="")
     schedule_list = []

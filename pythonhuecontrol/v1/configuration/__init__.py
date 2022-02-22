@@ -55,9 +55,9 @@ class DeviceTypes(HueObject):
 
 
 class SWUpdate(HueObject):
-    def __init__(self, identity: str, uri: str) -> None:
-        self.devicetypes = DeviceTypes("", uri)
-        super().__init__(identity, uri)
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self.devicetypes = DeviceTypes("", uri, raw=raw)
+        super().__init__(identity, uri, raw=raw)
 
     def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)
@@ -113,9 +113,9 @@ class SWUpdate(HueObject):
 
 
 class SWUpdate2(HueObject):
-    def __init__(self, identity: str, uri: str) -> None:
-        self.autoinstall = AutoInstall("", uri)
-        super().__init__(identity, uri)
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self.autoinstall = AutoInstall("", uri, raw=raw)
+        super().__init__(identity, uri, raw=raw)
 
     def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)
@@ -163,12 +163,12 @@ class SWUpdate2(HueObject):
 
 
 class Configuration(HueObject):
-    def __init__(self, identity: str, uri: str) -> None:
-        self.swupdate = SWUpdate("", uri)
-        self.swupdate2 = SWUpdate2("", uri)
-        self.internetservices = InternetServices("", uri)
-        self.backup = Backup("", uri)
-        super().__init__(identity, uri)
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self.swupdate = SWUpdate("", uri, raw=raw)
+        self.swupdate2 = SWUpdate2("", uri, raw=raw)
+        self.internetservices = InternetServices("", uri, raw=raw)
+        self.backup = Backup("", uri, raw=raw)
+        super().__init__(identity, uri, raw=raw)
 
     def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)

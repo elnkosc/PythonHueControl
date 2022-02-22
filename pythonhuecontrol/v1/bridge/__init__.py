@@ -44,6 +44,7 @@ def create_bridge_user(uri: str, device_type: str, generate_client_key: bool = F
 class Bridge(HueObject):
     def __init__(self, identity: str, uri: str, clientkey: str = None) -> None:
         self.registration_uri = uri
+        self.config_uri = uri + "/config"
         self.groups_uri = uri + "/groups"
         self.lights_uri = uri + "/lights"
         self.sensors_uri = uri + "/sensors"
@@ -54,12 +55,7 @@ class Bridge(HueObject):
         self.new_lights_uri = uri + "/lights/new"
         self.new_sensors_uri = uri + "/sensors/new"
         self.clientkey = clientkey
-        self.config = Configuration("", uri + "/config")
         super().__init__(identity, uri)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.config.load_data(map_from_dict(self._raw, "config"))
 
     @property
     def light_ids(self) -> dict:
@@ -89,26 +85,37 @@ class Bridge(HueObject):
     def resourcelinks_ids(self) -> dict:
         return map_from_dict(self._raw, "resourcelinks")
 
+    @property
+    def config(self) -> Configuration:
+        return Configuration("", self.config_uri, raw=map_from_dict(self._raw, "config"))
+
     def light(self, light_id: str) -> Light:
-        return Light(light_id, self.lights_uri + "/" + light_id)
+        return Light(light_id, self.lights_uri + "/" + light_id,
+                     raw=map_from_dict(self._raw, "lights", light_id))
 
     def group(self, group_id: str) -> Group:
-        return Group(group_id, self.groups_uri + "/" + group_id)
+        return Group(group_id, self.groups_uri + "/" + group_id,
+                     raw=map_from_dict(self._raw, "groups", group_id))
 
     def sensor(self, sensor_id: str) -> Sensor:
-        return Sensor(sensor_id, self.sensors_uri + "/" + sensor_id)
+        return Sensor(sensor_id, self.sensors_uri + "/" + sensor_id,
+                      raw=map_from_dict(self._raw, "sensors", sensor_id))
 
     def schedule(self, schedule_id: str) -> Schedule:
-        return Schedule(schedule_id, self.schedules_uri + "/" + schedule_id)
+        return Schedule(schedule_id, self.schedules_uri + "/" + schedule_id,
+                        raw=map_from_dict(self._raw, "schedules", schedule_id))
 
     def scene(self, scene_id: str) -> Scene:
-        return Scene(scene_id, self.scenes_uri + "/" + scene_id)
+        return Scene(scene_id, self.scenes_uri + "/" + scene_id,
+                     raw=map_from_dict(self._raw, "scenes", scene_id))
 
     def rule(self, rule_id: str) -> Rule:
-        return Rule(rule_id, self.rules_uri + "/" + rule_id)
+        return Rule(rule_id, self.rules_uri + "/" + rule_id,
+                    raw=map_from_dict(self._raw, "rules", rule_id))
 
-    def resourcelinks(self, resourcelinks_id: str) -> ResourceLinks:
-        return ResourceLinks(resourcelinks_id, self.resourcelinks_uri + "/" + resourcelinks_id)
+    def resourcelinks(self, resourcelink_id: str) -> ResourceLinks:
+        return ResourceLinks(resourcelink_id, self.resourcelinks_uri + "/" + resourcelink_id,
+                             raw=map_from_dict(self._raw, "resourcelinks", resourcelink_id))
 
     def new_sensors(self) -> list:
         return scan_new(self.new_sensors_uri)

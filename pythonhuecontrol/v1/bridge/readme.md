@@ -10,64 +10,14 @@
 ###`class Bridge`  
   Class containing methods for interacting with the bridge. Properties of the bridge can easily be accessed/modified by getting/setting class member values (that are implemented using getters/setters and will directly be mirrored on the bridge).
 #### Member variables:
-- `.light_ids`
-- `.group_ids`
-- `.sensor_ids`
-- `.scene_ids`
-- `.rule_ids`
-- `.schedule_ids`
-- `.config.name` (read/write)
-- `.config.whitelist` (read only)
-- `.config.portalstate` (read only)
-- `.config.apiversion` (read only)
-- `.config.swversion` (readonly)
-- `.config.proxyaddress` (read/write)
-- `.config.proxyport` (read/write)
-- `.config.linkbutton` (read/write)
-- `.config.ipaddress` (read/write)
-- `.config.mac` (readonly)
-- `.config.netmask` (read/write)
-- `.config.gateway` (read/write)
-- `.config.dhcp` (read/write)
-- `.config.portalservices` (readonly)
-- `.config.utc` (read/write)
-- `.config.localtime` (readonly)
-- `.config.timezone` (read/write)
-- `.config.zigbeechannel` (read/write)
-- `.config.modelid` (readonly)
-- `.config.bridgeid` (readonly)
-- `.config.factorynew` (readonly)
-- `.config.replacesbridgeid` (readonly)
-- `.config.replacesbridgeid` (readonly)
-- `.config.starterkitid` (readonly)
-- `.config.touchlink` (read/write)  
-- `.config.internetservices.internet` (readonly)
-- `.config.internetservices.remoteaccess` (readonly)
-- `.config.internetservices.time` (readonly)
-- `.config.internetservices.swupdate` (readonly)
-- `.config.backup.status` (readonly)
-- `.config.backup.errorcode` (readonly)
-- `.config.swupdate.checkforupdate` (read/write)
-- `.config.swupdate.updatestate` (readonly)
-- `.config.swupdate.notify` (read/write)
-- `.config.swupdate.url` (read/write)
-- `.config.swupdate.text` (read/write)
-- `.config.swupdate.devicetypes.bridge` (readonly)
-- `.config.swupdate.devicetypes.lights` (readonly)
-- `.config.swupdate.devicetypes.sensors` (readonly)
-- `.config.swupdate2.bridge` (readonly)
-- `.config.swupdate2.checkforupdate` (read/write)
-- `.config.swupdate2.state` (readonly)
-- `.config.swupdate2.install` (read/write)
-- `.config.swupdate2.lastchange` (readonly)
-- `.config.swupdate2.lastinstall` (readonly)
-- `.config.swupdate2.autoinstall.on` (readonly)
-- `.config.swupdate2.autoinstall.updatetime` (readonly)  
+- `.light_ids` (list of IDs)
+- `.group_ids` (list of IDs)
+- `.sensor_ids` (list of IDs)
+- `.scene_ids` (list of IDs)
+- `.rule_ids` (list of IDs)
+- `.schedule_ids` (list of IDs)
+- `.config` (Configuration object)
 #### Member functions:
-- `.config.set(name=None, proxyaddress=None, proxyport=None, linkbutton=None, ipaddress=None, netmask=None, gateway=None, dhcp=None, utc=None, timezone=None, zigbeechannel=None, touchlink=None)`  
-  `.swupdate.set(self, checkforupdate=None, notify=None, url=None, text=None)`  
-  `.swupdate2.set(self, checkforupdate=None, install=None)`    
-  Methods to set multiple values in operation. When setting multiple bridge parameters, this method will only make a single REST call in comparison to using the member variables directly. Each assignment will result in a separate REST call.  
 - `light(light_id)`  
   `group(group_id)`  
   `sensor(sensor_id)`  

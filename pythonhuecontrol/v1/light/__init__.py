@@ -23,9 +23,9 @@ class LightCapabilitiesControlCt(HueObject):
 
 
 class LightCapabilitiesControl(HueObject):
-    def __init__(self, identity: str, uri: str) -> None:
-        self.ct = LightCapabilitiesControlCt("", uri)
-        super().__init__(identity, uri)
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self.ct = LightCapabilitiesControlCt("", uri, raw=raw)
+        super().__init__(identity, uri, raw=raw)
 
     def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)
@@ -49,10 +49,10 @@ class LightCapabilitiesControl(HueObject):
 
 
 class LightCapabilities(HueObject):
-    def __init__(self, identity: str, uri: str) -> None:
-        self.streaming = LightCapabilitiesStreaming("", uri)
-        self.control = LightCapabilitiesControl("", uri)
-        super().__init__(identity, uri)
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self.streaming = LightCapabilitiesStreaming("", uri, raw=raw)
+        self.control = LightCapabilitiesControl("", uri, raw=raw)
+        super().__init__(identity, uri, raw=raw)
 
     def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)
@@ -234,10 +234,10 @@ class LightState(HueObject):
 
 
 class Light(HueObject):
-    def __init__(self, identity: str, uri: str) -> None:
-        self.state = LightState("", uri)
-        self.capabilities = LightCapabilities("", uri)
-        super().__init__(identity, uri)
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self.state = LightState("", uri, raw=raw)
+        self.capabilities = LightCapabilities("", uri, raw=raw)
+        super().__init__(identity, uri, raw=raw)
 
     def load_data(self, raw: dict = None) -> None:
         super().load_data(raw)

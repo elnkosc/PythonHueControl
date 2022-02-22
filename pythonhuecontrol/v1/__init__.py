@@ -29,14 +29,17 @@ def scan_new(scan_uri: str) -> list:
 
 
 class HueObject:
-    def __init__(self, identity: str, uri: str) -> None:
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
         self._identity = identity
         self._uri = uri
         self._raw = None
         self._response_status_code = 0
         self._response_json = None
         self._response_message = ""
-        self.load_data()
+        if raw is None:
+            self.load_data()
+        else:
+            self.load_data(raw)
 
     @property
     def identity(self):

@@ -64,12 +64,12 @@ class SceneLightStateList(HueObject):
 
 
 class Scene(HueObject):
-    def __init__(self, identity, uri):
-        self.appdata = SceneAppData("", uri)
-        self.lightstates = SceneLightStateList("", uri)
-        super().__init__(identity, uri)
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self.appdata = SceneAppData("", uri, raw=raw)
+        self.lightstates = SceneLightStateList("", uri, raw=raw)
+        super().__init__(identity, uri, raw=raw)
 
-    def load_data(self, raw=None):
+    def load_data(self, raw=None) -> None:
         super().load_data(raw)
         self.appdata.load_data(self._raw)
         self.lightstates.load_data(self._raw)
