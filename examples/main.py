@@ -32,7 +32,8 @@ if __name__ == '__main__':
     light_list = []
     for light_id in bridge.light_ids:
         light_list.append(bridge.light(light_id))
-        print(light_list[-1].identity, " - ", light_list[-1].type, ", ", light_list[-1].name, sep="")
+        print(light_list[-1].identity, " - ", light_list[-1].name, ", ", light_list[-1].type, ", On=",
+              light_list[-1].state.on, sep="")
 
     print("\nDefined Groups (", len(bridge.group_ids), "):", sep="")
     group_list = []
@@ -70,6 +71,17 @@ if __name__ == '__main__':
         resourcelinks_list.append(bridge.resourcelinks(resourcelinks_id))
         print(resourcelinks_list[-1].identity, " - ", resourcelinks_list[-1].name, " - ",
               resourcelinks_list[-1].description, sep="")
+
+    print("\nCapabilities:", sep="")
+    print("Lights        : ", bridge.capabilities.lights.total - bridge.capabilities.lights.available, sep="")
+    print("Groups        : ", bridge.capabilities.groups.total - bridge.capabilities.groups.available, sep="")
+    print("Sensors       : ", bridge.capabilities.sensors.total - bridge.capabilities.sensors.available, sep="")
+    print("Scenes        : ", bridge.capabilities.scenes.total - bridge.capabilities.scenes.available, sep="")
+    print("Rules         : ", bridge.capabilities.rules.total - bridge.capabilities.rules.available, sep="")
+    print("Schedules     : ", bridge.capabilities.schedules.total - bridge.capabilities.schedules.available, sep="")
+    print("Resourcelinks : ", bridge.capabilities.resourcelinks.total - bridge.capabilities.resourcelinks.available, sep="")
+    print("Streaming     : ", bridge.capabilities.streaming.total - bridge.capabilities.streaming.available, sep="")
+    print("Amount of TZs : ", len(bridge.capabilities.timezones.values), sep="")
 
     input("\nPress ENTER to start random light effects on randomly selected lights (for 1 minute)...")
     sec = 0

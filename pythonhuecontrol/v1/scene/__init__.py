@@ -1,15 +1,14 @@
-from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
+from pythonhuecontrol.v1 import HueObject, map_from_dict
 
 
 class SceneAppData(HueObject):
     @property
     def version(self) -> int:
-        return map_from_dict(self._raw, "appdata", "version")
+        return self.map_from_raw("appdata", "version")
 
     @property
     def data(self) -> str:
-        return map_from_dict(self._raw, "appdata", "data")
+        return self.map_from_raw("appdata", "data")
 
 
 class SceneLightState:
@@ -57,26 +56,16 @@ class SceneLightState:
 
 class SceneLightStateList(HueObject):
     def __getitem__(self, key: str) -> SceneLightState:
-        return SceneLightState(state=map_from_dict(self._raw, "lightstates", key))
+        return SceneLightState(state=self.map_from_raw("lightstates", key))
 
     def __setitem__(self, key: str, value: SceneLightState) -> None:
         self.set_data("lightstates/" + key, value.as_dict())
 
 
 class Scene(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.appdata = SceneAppData("", uri, raw=raw)
-        self.lightstates = SceneLightStateList("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw=None) -> None:
-        super().load_data(raw)
-        self.appdata.load_data(self._raw)
-        self.lightstates.load_data(self._raw)
-
     @property
     def name(self) -> str:
-        return map_from_dict(self._raw, "name")
+        return self.map_from_raw("name")
 
     @name.setter
     def name(self, name: str) -> None:
@@ -84,15 +73,15 @@ class Scene(HueObject):
 
     @property
     def type(self) -> str:
-        return map_from_dict(self._raw, "type")
+        return self.map_from_raw("type")
 
     @property
     def group(self) -> str:
-        return map_from_dict(self._raw, "group")
+        return self.map_from_raw("group")
 
     @property
     def lights(self) -> list[str]:
-        return map_from_dict(self._raw, "lights")
+        return self.map_from_raw("lights")
 
     @lights.setter
     def lights(self, lights: list[str]) -> None:
@@ -100,31 +89,39 @@ class Scene(HueObject):
 
     @property
     def owner(self) -> str:
-        return map_from_dict(self._raw, "owner")
+        return self.map_from_raw("owner")
 
     @property
     def recycle(self) -> bool:
-        return map_from_dict(self._raw, "recycle")
+        return self.map_from_raw("recycle")
 
     @property
     def locked(self) -> bool:
-        return map_from_dict(self._raw, "locked")
+        return self.map_from_raw("locked")
 
     @property
     def picture(self) -> str:
-        return map_from_dict(self._raw, "picture")
+        return self.map_from_raw("picture")
 
     @property
     def image(self) -> str:
-        return map_from_dict(self._raw, "image")
+        return self.map_from_raw("image")
 
     @property
     def lastupdated(self) -> str:
-        return map_from_dict(self._raw, "lastupdated")
+        return self.map_from_raw("lastupdated")
 
     @property
     def version(self) -> int:
-        return map_from_dict(self._raw, "version")
+        return self.map_from_raw("version")
+
+    @property
+    def appdata(self) -> SceneAppData:
+        return SceneAppData("", self._uri, raw=self._raw)
+
+    @property
+    def lightstates(self) -> SceneLightStateList:
+        return SceneLightStateList("", self._uri, raw=self._raw)
 
     def set(self, name: str = None, lights: list[str] = None) -> None:
         val = {}

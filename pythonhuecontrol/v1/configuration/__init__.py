@@ -1,71 +1,62 @@
 from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
 
 
 class Backup(HueObject):
     @property
     def status(self) -> str:
-        return map_from_dict(self._raw, "backup", "status")
+        return self.map_from_raw("backup", "status")
 
     @property
     def errorcode(self) -> int:
-        return map_from_dict(self._raw, "backup", "errorcode")
+        return self.map_from_raw("backup", "errorcode")
 
 
 class InternetServices(HueObject):
     @property
     def internet(self) -> str:
-        return map_from_dict(self._raw, "internetservices", "internet")
+        return self.map_from_raw("internetservices", "internet")
 
     @property
     def remoteaccess(self) -> str:
-        return map_from_dict(self._raw, "internetservices", "remoteaccess")
+        return self.map_from_raw("internetservices", "remoteaccess")
 
     @property
     def time(self) -> str:
-        return map_from_dict(self._raw, "internetservices", "time")
+        return self.map_from_raw("internetservices", "time")
 
     @property
     def swupdate(self) -> str:
-        return map_from_dict(self._raw, "internetservices", "swupdate")
+        return self.map_from_raw("internetservices", "swupdate")
 
 
 class AutoInstall(HueObject):
     @property
     def on(self) -> bool:
-        return map_from_dict(self._raw, "swupdate2", "autoinstall", "on")
+        return self.map_from_raw("swupdate2", "autoinstall", "on")
 
     @property
     def updatetime(self) -> str:
-        return map_from_dict(self._raw, "swupdate2", "autoinstall", "updatetime")
+        return self.map_from_raw("swupdate2", "autoinstall", "updatetime")
 
 
 class DeviceTypes(HueObject):
     @property
     def bridge(self) -> bool:
-        return map_from_dict(self._raw, "swupdate", "devicetypes", "bridge")
+        return self.map_from_raw("swupdate", "devicetypes", "bridge")
 
     @property
     def lights(self) -> list:
-        return map_from_dict(self._raw, "swupdate", "devicetypes", "lights")
+        return self.map_from_raw("swupdate", "devicetypes", "lights")
 
     @property
     def sensors(self) -> list:
-        return map_from_dict(self._raw, "swupdate", "devicetypes", "sensors")
+        return self.map_from_raw("swupdate", "devicetypes", "sensors")
 
 
 class SWUpdate(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.devicetypes = DeviceTypes("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.devicetypes.load_data(self._raw)
-
     @property
     def checkforupdate(self) -> bool:
-        return map_from_dict(self._raw, "swupdate", "checkforupdate")
+        return self.map_from_raw("swupdate", "checkforupdate")
 
     @checkforupdate.setter
     def checkforupdate(self, checkforupdate: bool) -> None:
@@ -73,11 +64,11 @@ class SWUpdate(HueObject):
 
     @property
     def updatestate(self) -> int:
-        return map_from_dict(self._raw, "swupdate", "updatestate")
+        return self.map_from_raw("swupdate", "updatestate")
 
     @property
     def notify(self) -> bool:
-        return map_from_dict(self._raw, "swupdate", "notify")
+        return self.map_from_raw("swupdate", "notify")
 
     @notify.setter
     def notify(self, notify: bool) -> None:
@@ -85,7 +76,7 @@ class SWUpdate(HueObject):
 
     @property
     def url(self) -> str:
-        return map_from_dict(self._raw, "swupdate", "url")
+        return self.map_from_raw("swupdate", "url")
 
     @url.setter
     def url(self, url: str) -> None:
@@ -93,11 +84,15 @@ class SWUpdate(HueObject):
 
     @property
     def text(self) -> str:
-        return map_from_dict(self._raw, "swupdate", "text")
+        return self.map_from_raw("swupdate", "text")
 
     @text.setter
     def text(self, text: str) -> None:
         self.set(text=text)
+
+    @property
+    def devicetypes(self):
+        return DeviceTypes("", self._uri, raw=self._raw)
 
     def set(self, checkforupdate: bool = None, notify: bool = None, url: str = None, text: str = None) -> None:
         val = {"swupdate": {}}
@@ -113,21 +108,13 @@ class SWUpdate(HueObject):
 
 
 class SWUpdate2(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.autoinstall = AutoInstall("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.autoinstall.load_data(self._raw)
-
     @property
     def bridge(self) -> dict:
-        return map_from_dict(self._raw, "swupdate2", "bridge")
+        return self.map_from_raw("swupdate2", "bridge")
 
     @property
     def checkforupdate(self) -> bool:
-        return map_from_dict(self._raw, "swupdate2", "checkforupdate")
+        return self.map_from_raw("swupdate2", "checkforupdate")
 
     @checkforupdate.setter
     def checkforupdate(self, checkforupdate: bool) -> None:
@@ -135,11 +122,11 @@ class SWUpdate2(HueObject):
 
     @property
     def state(self) -> str:
-        return map_from_dict(self._raw, "swupdate2", "state")
+        return self.map_from_raw("swupdate2", "state")
 
     @property
     def install(self) -> bool:
-        return map_from_dict(self._raw, "swupdate2", "install")
+        return self.map_from_raw("swupdate2", "install")
 
     @install.setter
     def install(self, install: bool) -> None:
@@ -147,11 +134,15 @@ class SWUpdate2(HueObject):
 
     @property
     def lastchange(self) -> str:
-        return map_from_dict(self._raw, "swupdate2", "lastchange")
+        return self.map_from_raw("swupdate2", "lastchange")
 
     @property
     def lastinstall(self) -> str:
-        return map_from_dict(self._raw, "swupdate2", "lastinstall")
+        return self.map_from_raw("swupdate2", "lastinstall")
+
+    @property
+    def autoinstall(self) -> AutoInstall:
+        return AutoInstall("", self._uri, raw=self._raw)
 
     def set(self, checkforupdate: bool = None, install: bool = None) -> None:
         val = {"swupdate2": {}}
@@ -163,23 +154,9 @@ class SWUpdate2(HueObject):
 
 
 class Configuration(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.swupdate = SWUpdate("", uri, raw=raw)
-        self.swupdate2 = SWUpdate2("", uri, raw=raw)
-        self.internetservices = InternetServices("", uri, raw=raw)
-        self.backup = Backup("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.swupdate.load_data(self._raw)
-        self.swupdate2.load_data(self._raw)
-        self.internetservices.load_data(self._raw)
-        self.backup.load_data(self._raw)
-
     @property
     def name(self) -> str:
-        return map_from_dict(self._raw, "name")
+        return self.map_from_raw("name")
 
     @name.setter
     def name(self, name: str) -> None:
@@ -187,23 +164,23 @@ class Configuration(HueObject):
 
     @property
     def whitelist(self) -> dict:
-        return map_from_dict(self._raw, "whitelist")
+        return self.map_from_raw("whitelist")
 
     @property
     def portalstate(self) -> dict:
-        return map_from_dict(self._raw, "portalstate")
+        return self.map_from_raw("portalstate")
 
     @property
     def apiversion(self) -> str:
-        return map_from_dict(self._raw, "apiversion")
+        return self.map_from_raw("apiversion")
 
     @property
     def swversion(self) -> str:
-        return map_from_dict(self._raw, "swversion")
+        return self.map_from_raw("swversion")
 
     @property
     def proxyaddress(self) -> str:
-        return map_from_dict(self._raw, "proxyaddress")
+        return self.map_from_raw("proxyaddress")
 
     @proxyaddress.setter
     def proxyaddress(self, proxyaddress: str) -> None:
@@ -211,7 +188,7 @@ class Configuration(HueObject):
 
     @property
     def proxyport(self) -> int:
-        return map_from_dict(self._raw, "proxyport")
+        return self.map_from_raw("proxyport")
 
     @proxyport.setter
     def proxyport(self, proxyport: int) -> None:
@@ -219,7 +196,7 @@ class Configuration(HueObject):
 
     @property
     def linkbutton(self) -> bool:
-        return map_from_dict(self._raw, "linkbutton")
+        return self.map_from_raw("linkbutton")
 
     @linkbutton.setter
     def linkbutton(self, linkbutton: bool) -> None:
@@ -227,7 +204,7 @@ class Configuration(HueObject):
 
     @property
     def ipaddress(self) -> str:
-        return map_from_dict(self._raw, "ipaddress")
+        return self.map_from_raw("ipaddress")
 
     @ipaddress.setter
     def ipaddress(self, ipaddress: str) -> None:
@@ -235,11 +212,11 @@ class Configuration(HueObject):
 
     @property
     def mac(self) -> str:
-        return map_from_dict(self._raw, "mac")
+        return self.map_from_raw("mac")
 
     @property
     def netmask(self) -> str:
-        return map_from_dict(self._raw, "netmask")
+        return self.map_from_raw("netmask")
 
     @netmask.setter
     def netmask(self, netmask: str) -> None:
@@ -247,7 +224,7 @@ class Configuration(HueObject):
 
     @property
     def gateway(self) -> str:
-        return map_from_dict(self._raw, "gateway")
+        return self.map_from_raw("gateway")
 
     @gateway.setter
     def gateway(self, gateway: str) -> None:
@@ -255,7 +232,7 @@ class Configuration(HueObject):
 
     @property
     def dhcp(self) -> bool:
-        return map_from_dict(self._raw, "dhcp")
+        return self.map_from_raw("dhcp")
 
     @dhcp.setter
     def dhcp(self, dhcp: bool) -> None:
@@ -263,11 +240,11 @@ class Configuration(HueObject):
 
     @property
     def portalservices(self) -> bool:
-        return map_from_dict(self._raw, "portalservices")
+        return self.map_from_raw("portalservices")
 
     @property
     def utc(self) -> str:
-        return map_from_dict(self._raw, "UTC")
+        return self.map_from_raw("UTC")
 
     @utc.setter
     def utc(self, utc: str) -> None:
@@ -275,11 +252,11 @@ class Configuration(HueObject):
 
     @property
     def localtime(self) -> str:
-        return map_from_dict(self._raw, "localtime")
+        return self.map_from_raw("localtime")
 
     @property
     def timezone(self) -> str:
-        return map_from_dict(self._raw, "timezone")
+        return self.map_from_raw("timezone")
 
     @timezone.setter
     def timezone(self, timezone: str) -> None:
@@ -287,7 +264,7 @@ class Configuration(HueObject):
 
     @property
     def zigbeechannel(self) -> int:
-        return map_from_dict(self._raw, "zigbeechannel")
+        return self.map_from_raw("zigbeechannel")
 
     @zigbeechannel.setter
     def zigbeechannel(self, zigbeechannel: int) -> None:
@@ -295,35 +272,51 @@ class Configuration(HueObject):
 
     @property
     def modelid(self) -> str:
-        return map_from_dict(self._raw, "modelid")
+        return self.map_from_raw("modelid")
 
     @property
     def bridgeid(self) -> str:
-        return map_from_dict(self._raw, "bridgeid")
+        return self.map_from_raw("bridgeid")
 
     @property
     def factorynew(self) -> bool:
-        return map_from_dict(self._raw, "factorynew")
+        return self.map_from_raw("factorynew")
 
     @property
     def replacesbridgeid(self) -> str:
-        return map_from_dict(self._raw, "replacesbridgeid")
+        return self.map_from_raw("replacesbridgeid")
 
     @property
     def datastoreversion(self) -> str:
-        return map_from_dict(self._raw, "datastoreversion")
+        return self.map_from_raw("datastoreversion")
 
     @property
     def starterkitid(self) -> str:
-        return map_from_dict(self._raw, "starterkitid")
+        return self.map_from_raw("starterkitid")
 
     @property
     def touchlink(self) -> bool:
-        return map_from_dict(self._raw, "touchlink")
+        return self.map_from_raw("touchlink")
 
     @touchlink.setter
     def touchlink(self, touchlink: bool) -> None:
         self.set(touchlink=touchlink)
+
+    @property
+    def swupdate(self) -> SWUpdate:
+        return SWUpdate("", self._uri, raw=self._raw)
+
+    @property
+    def swupdate2(self) -> SWUpdate2:
+        return SWUpdate2("", self._uri, raw=self._raw)
+
+    @property
+    def internetservices(self) -> InternetServices:
+        return InternetServices("", self._uri, raw=self._raw)
+
+    @property
+    def backup(self) -> Backup:
+        return Backup("", self._uri, raw=self._raw)
 
     def set(self, name: str = None, proxyaddress: str = None, proxyport: int = None, linkbutton: bool = None,
             ipaddress: str = None, netmask: str = None, gateway: str = None, dhcp: bool = None, utc: str = None,

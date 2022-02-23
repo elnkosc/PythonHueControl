@@ -2,7 +2,7 @@ import requests
 import json
 
 
-# get item from dictionary multiple levels deep
+# get item from raw dictionary multiple levels deep
 def map_from_dict(dictionary: dict, *items: str, default: object = None):
     d = dictionary
     for item in items:
@@ -44,6 +44,10 @@ class HueObject:
     @property
     def identity(self):
         return self._identity
+
+    # get item from raw dictionary multiple levels deep
+    def map_from_raw(self, *items: str, default: object = None):
+        return map_from_dict(self._raw, *items, default=default)
 
     # parse response from requests.response object and return whether REST call was successful
     # in case of successful API call, if ID is included in the response, _response_message holds the ID
@@ -97,7 +101,7 @@ class HueObject:
 
     # getter for items not explicitly available in subclass
     def get_item(self, *args: str) -> object:
-        return map_from_dict(self._raw, *args)
+        return self.map_from_raw(*args)
 
     # setter for items not explicitly available in subclass
     def set_item(self, category: str, item: str, value: object) -> None:

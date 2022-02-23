@@ -1,21 +1,20 @@
 from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
 
 
 class GroupState(HueObject):
     @property
     def all_on(self) -> bool:
-        return map_from_dict(self._raw, "state", "all_on")
+        return self.map_from_raw("state", "all_on")
 
     @property
     def any_on(self) -> bool:
-        return map_from_dict(self._raw, "state", "any_on")
+        return self.map_from_raw("state", "any_on")
 
 
 class GroupAction(HueObject):
     @property
     def on(self) -> bool:
-        return map_from_dict(self._raw, "action", "on")
+        return self.map_from_raw("action", "on")
 
     @on.setter
     def on(self, on: bool) -> None:
@@ -23,7 +22,7 @@ class GroupAction(HueObject):
 
     @property
     def bri(self) -> int:
-        return map_from_dict(self._raw, "action", "bri")
+        return self.map_from_raw("action", "bri")
 
     @bri.setter
     def bri(self, bri: int) -> None:
@@ -31,7 +30,7 @@ class GroupAction(HueObject):
 
     @property
     def hue(self) -> int:
-        return map_from_dict(self._raw, "action", "hue")
+        return self.map_from_raw("action", "hue")
 
     @hue.setter
     def hue(self, hue: int) -> None:
@@ -39,7 +38,7 @@ class GroupAction(HueObject):
 
     @property
     def sat(self) -> int:
-        return map_from_dict(self._raw, "action", "sat")
+        return self.map_from_raw("action", "sat")
 
     @sat.setter
     def sat(self, sat: int) -> None:
@@ -47,7 +46,7 @@ class GroupAction(HueObject):
 
     @property
     def xy(self) -> list[float, float]:
-        return map_from_dict(self._raw, "action", "xy")
+        return self.map_from_raw("action", "xy")
 
     @xy.setter
     def xy(self, xy: list[float, float]) -> None:
@@ -55,7 +54,7 @@ class GroupAction(HueObject):
 
     @property
     def ct(self) -> int:
-        return map_from_dict(self._raw, "action", "ct")
+        return self.map_from_raw("action", "ct")
 
     @ct.setter
     def ct(self, ct: int) -> None:
@@ -63,7 +62,7 @@ class GroupAction(HueObject):
 
     @property
     def alert(self) -> str:
-        return map_from_dict(self._raw, "action", "alert")
+        return self.map_from_raw("action", "alert")
 
     @alert.setter
     def alert(self, alert: str) -> None:
@@ -71,7 +70,7 @@ class GroupAction(HueObject):
 
     @property
     def effect(self) -> str:
-        return map_from_dict(self._raw, "action", "effect")
+        return self.map_from_raw("action", "effect")
 
     @effect.setter
     def effect(self, effect: str) -> None:
@@ -79,7 +78,7 @@ class GroupAction(HueObject):
 
     @property
     def transitiontime(self) -> int:
-        return map_from_dict(self._raw, "action", "transitiontime")
+        return self.map_from_raw("action", "transitiontime")
 
     @transitiontime.setter
     def transitiontime(self, transitiontime: int) -> None:
@@ -87,7 +86,7 @@ class GroupAction(HueObject):
 
     @property
     def scene(self) -> str:
-        return map_from_dict(self._raw, "action", "scene")
+        return self.map_from_raw("action", "scene")
 
     @scene.setter
     def scene(self, scene: str) -> None:
@@ -95,7 +94,7 @@ class GroupAction(HueObject):
 
     @property
     def bri_inc(self) -> int:
-        return map_from_dict(self._raw, "action", "bri_inc")
+        return self.map_from_raw("action", "bri_inc")
 
     @bri_inc.setter
     def bri_inc(self, bri_inc: int) -> None:
@@ -103,7 +102,7 @@ class GroupAction(HueObject):
 
     @property
     def hue_inc(self) -> int:
-        return map_from_dict(self._raw, "action", "hue_inc")
+        return self.map_from_raw("action", "hue_inc")
 
     @hue_inc.setter
     def hue_inc(self, hue_inc: int) -> None:
@@ -111,7 +110,7 @@ class GroupAction(HueObject):
 
     @property
     def sat_inc(self) -> int:
-        return map_from_dict(self._raw, "action", "sat")
+        return self.map_from_raw("action", "sat")
 
     @sat_inc.setter
     def sat_inc(self, sat_inc: int) -> None:
@@ -119,7 +118,7 @@ class GroupAction(HueObject):
 
     @property
     def xy_inc(self) -> list[float, float]:
-        return map_from_dict(self._raw, "action", "xy_inc")
+        return self.map_from_raw("action", "xy_inc")
 
     @xy_inc.setter
     def xy_inc(self, xy_inc: list[float, float]) -> None:
@@ -127,7 +126,7 @@ class GroupAction(HueObject):
 
     @property
     def ct_inc(self) -> int:
-        return map_from_dict(self._raw, "action", "ct_inc")
+        return self.map_from_raw("action", "ct_inc")
 
     @ct_inc.setter
     def ct_inc(self, ct_inc: int) -> None:
@@ -174,73 +173,59 @@ class GroupAction(HueObject):
 class GroupPresence(HueObject):
     @property
     def lastupdated(self) -> str:
-        return map_from_dict(self._raw, "presence", "lastupdated")
+        return self.map_from_raw("presence", "lastupdated")
 
     @property
     def presence(self) -> bool:
-        return map_from_dict(self._raw, "presence", "presence")
+        return self.map_from_raw("presence", "presence")
 
     @property
     def presence_all(self) -> bool:
-        return map_from_dict(self._raw, "presence", "presence_all")
+        return self.map_from_raw("presence", "presence_all")
 
 
 class GroupLightLevel(HueObject):
     @property
     def state(self) -> dict:
-        return map_from_dict(self._raw, "lightlevel", "state")
+        return self.map_from_raw("lightlevel", "state")
 
     @property
     def lastupdated(self) -> str:
-        return map_from_dict(self._raw, "lightlevel", "lastupdated")
+        return self.map_from_raw("lightlevel", "lastupdated")
 
     @property
     def dark(self) -> bool:
-        return map_from_dict(self._raw, "lightlevel", "dark")
+        return self.map_from_raw("lightlevel", "dark")
 
     @property
     def dark_all(self) -> bool:
-        return map_from_dict(self._raw, "lightlevel", "dark_all")
+        return self.map_from_raw("lightlevel", "dark_all")
 
     @property
     def daylight(self) -> bool:
-        return map_from_dict(self._raw, "lightlevel", "daylight")
+        return self.map_from_raw("lightlevel", "daylight")
 
     @property
     def daylight_any(self) -> bool:
-        return map_from_dict(self._raw, "lightlevel", "daylight_any")
+        return self.map_from_raw("lightlevel", "daylight_any")
 
     @property
     def lightlevel(self) -> int:
-        return map_from_dict(self._raw, "lightlevel", "lightlevel")
+        return self.map_from_raw("lightlevel", "lightlevel")
 
     @property
     def lightlevel_min(self) -> int:
-        return map_from_dict(self._raw, "lightlevel", "lightlevel_min")
+        return self.map_from_raw("lightlevel", "lightlevel_min")
 
     @property
     def lightlevel_max(self) -> int:
-        return map_from_dict(self._raw, "lightlevel", "lightlevel_max")
+        return self.map_from_raw("lightlevel", "lightlevel_max")
 
 
 class Group(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.state = GroupState("", uri, raw=raw)
-        self.action = GroupAction("", uri, raw=raw)
-        self.presence = GroupPresence("", uri, raw=raw)
-        self.lightlevel = GroupLightLevel("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.state.load_data(self._raw)
-        self.action.load_data(self._raw)
-        self.presence.load_data(self._raw)
-        self.lightlevel.load_data(self._raw)
-
     @property
     def name(self) -> str:
-        return map_from_dict(self._raw, "name")
+        return self.map_from_raw("name")
 
     @name.setter
     def name(self, name: str) -> None:
@@ -248,11 +233,11 @@ class Group(HueObject):
 
     @property
     def type(self) -> str:
-        return map_from_dict(self._raw, "type")
+        return self.map_from_raw("type")
 
     @property
     def lights(self) -> list[str]:
-        return map_from_dict(self._raw, "lights")
+        return self.map_from_raw("lights")
 
     @lights.setter
     def lights(self, lights: list[str]) -> None:
@@ -260,7 +245,7 @@ class Group(HueObject):
 
     @property
     def sensors(self) -> list[str]:
-        return map_from_dict(self._raw, "sensors")
+        return self.map_from_raw("sensors")
 
     @sensors.setter
     def sensors(self, sensors: list[str]) -> None:
@@ -268,15 +253,15 @@ class Group(HueObject):
 
     @property
     def modelid(self) -> str:
-        return map_from_dict(self._raw, "modelid")
+        return self.map_from_raw("modelid")
 
     @property
     def uniqueid(self) -> str:
-        return map_from_dict(self._raw, "uniqueid")
+        return self.map_from_raw("uniqueid")
 
     @property
     def group_class(self) -> str:
-        return map_from_dict(self._raw, "class")
+        return self.map_from_raw("class")
 
     @group_class.setter
     def group_class(self, group_class: str) -> None:
@@ -284,7 +269,7 @@ class Group(HueObject):
 
     @property
     def recycle(self) -> bool:
-        return map_from_dict(self._raw, "recycle")
+        return self.map_from_raw("recycle")
 
     @recycle.setter
     def recycle(self, recycle: bool) -> None:
@@ -295,6 +280,22 @@ class Group(HueObject):
 
     def switch_off(self) -> None:
         self.action.on = False
+
+    @property
+    def state(self) -> GroupState:
+        return GroupState("", self._uri, raw=self._raw)
+
+    @property
+    def action(self) -> GroupAction:
+        return GroupAction("", self._uri, raw=self._raw)
+
+    @property
+    def presence(self) -> GroupPresence:
+        return GroupPresence("", self._uri, raw=self._raw)
+
+    @property
+    def lightlevel(self) -> GroupLightLevel:
+        return GroupLightLevel("", self._uri, raw=self._raw)
 
     def set(self, name: str = None, lights: list[str] = None, sensors: list[str] = None, group_class: str = None,
             recycle: bool = None):

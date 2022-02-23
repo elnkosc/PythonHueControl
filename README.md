@@ -5,7 +5,8 @@ The most **complete**, yet **simple** to use, Python library for Philips Hue con
 This Python package contains the classes and functions to interface with the Philips Hue bridge. It consists of the following files:
 * pythonhuecontrol - generic definitions applicable to both v1 and v2 of the API
     * v1 - generic definitions for v1 of the API only
-      * bridge - definitions for interacting with the bridge (configuration of and adding lights/sensors/rules/groups/scenes/schedules)
+      * bridge - definitions for interacting with the bridge (control + adding lights/sensors/rules/groups/scenes/schedules)
+      * configuration - managing bridge configuration
       * light - definition for controlling lights
       * group - definitions for controlling groups
       * rule - definitions for controlling rules
@@ -13,6 +14,7 @@ This Python package contains the classes and functions to interface with the Phi
       * schedule - definitions for controlling schedules
       * sensor - definitions for controlling sensors
       * resourcelinks - definitions for controlling resourcelinks
+      * capabilities - used and available resources in bridge
     * v2 - UNDER CONSTRUCTION
 
 Details can be found in teh README files for the different sub-packages.  

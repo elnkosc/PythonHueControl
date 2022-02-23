@@ -1,11 +1,10 @@
 from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
 
 
 class ResourceLinks(HueObject):
     @property
     def name(self) -> str:
-        return map_from_dict(self._raw, "name")
+        return self.map_from_raw("name")
 
     @name.setter
     def name(self, name: str) -> None:
@@ -13,7 +12,7 @@ class ResourceLinks(HueObject):
 
     @property
     def description(self) -> str:
-        return map_from_dict(self._raw, "description")
+        return self.map_from_raw("description")
 
     @description.setter
     def description(self, description: str) -> None:
@@ -21,7 +20,7 @@ class ResourceLinks(HueObject):
 
     @property
     def resource_type(self) -> str:
-        return map_from_dict(self._raw, "type")
+        return self.map_from_raw("type")
 
     @resource_type.setter
     def resource_type(self, resource_type: str) -> None:
@@ -29,7 +28,7 @@ class ResourceLinks(HueObject):
 
     @property
     def classid(self) -> int:
-        return map_from_dict(self._raw, "classid")
+        return self.map_from_raw("classid")
 
     @classid.setter
     def classid(self, classid: int) -> None:
@@ -37,7 +36,7 @@ class ResourceLinks(HueObject):
 
     @property
     def owner(self) -> str:
-        return map_from_dict(self._raw, "owner")
+        return self.map_from_raw("owner")
 
     @owner.setter
     def owner(self, owner: str) -> None:
@@ -45,7 +44,7 @@ class ResourceLinks(HueObject):
 
     @property
     def recycle(self) -> bool:
-        return map_from_dict(self._raw, "recycle")
+        return self.map_from_raw("recycle")
 
     @recycle.setter
     def recycle(self, recycle: bool) -> None:
@@ -53,7 +52,7 @@ class ResourceLinks(HueObject):
 
     @property
     def links(self) -> list[str]:
-        return map_from_dict(self._raw, "links")
+        return self.map_from_raw("links")
 
     @links.setter
     def links(self, links: list[str]) -> None:

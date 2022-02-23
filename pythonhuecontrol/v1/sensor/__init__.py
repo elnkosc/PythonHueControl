@@ -1,11 +1,10 @@
 from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
 
 
 class SensorState(HueObject):
     @property
     def presence(self) -> bool:
-        return map_from_dict(self._raw, "state", "presence")
+        return self.map_from_raw("state", "presence")
 
     @presence.setter
     def presence(self, presence: bool) -> None:
@@ -13,15 +12,15 @@ class SensorState(HueObject):
 
     @property
     def daylight(self) -> bool:
-        return map_from_dict(self._raw, "state", "daylight")
+        return self.map_from_raw("state", "daylight")
 
     @property
     def buttonevent(self) -> int:
-        return map_from_dict(self._raw, "state", "buttonevent")
+        return self.map_from_raw("state", "buttonevent")
 
     @property
     def lastupdated(self) -> str:
-        return map_from_dict(self._raw, "state", "lastupdated")
+        return self.map_from_raw("state", "lastupdated")
 
     def set(self, presence: bool = None) -> None:
         val = {}
@@ -33,7 +32,7 @@ class SensorState(HueObject):
 class SensorConfig(HueObject):
     @property
     def on(self) -> bool:
-        return map_from_dict(self._raw, "config", "on")
+        return self.map_from_raw("config", "on")
 
     @on.setter
     def on(self, on: bool) -> None:
@@ -41,11 +40,11 @@ class SensorConfig(HueObject):
 
     @property
     def reachable(self) -> bool:
-        return map_from_dict(self._raw, "config", "reachable")
+        return self.map_from_raw("config", "reachable")
 
     @property
     def battery(self) -> int:
-        return map_from_dict(self._raw, "config", "battery")
+        return self.map_from_raw("config", "battery")
 
     def set(self, on: bool = None) -> None:
         val = {}
@@ -55,19 +54,9 @@ class SensorConfig(HueObject):
 
 
 class Sensor(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.config = SensorConfig("", uri, raw=raw)
-        self.state = SensorState("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.config.load_data(self._raw)
-        self.state.load_data(self._raw)
-
     @property
     def name(self) -> str:
-        return map_from_dict(self._raw, "name")
+        return self.map_from_raw("name")
 
     @name.setter
     def name(self, name: str) -> None:
@@ -75,27 +64,35 @@ class Sensor(HueObject):
 
     @property
     def type(self) -> str:
-        return map_from_dict(self._raw, "type")
+        return self.map_from_raw("type")
 
     @property
     def modelid(self) -> str:
-        return map_from_dict(self._raw, "modelid")
+        return self.map_from_raw("modelid")
 
     @property
     def uniqueid(self) -> str:
-        return map_from_dict(self._raw, "uniqueid")
+        return self.map_from_raw("uniqueid")
 
     @property
     def manufacturername(self) -> str:
-        return map_from_dict(self._raw, "manufacturername")
+        return self.map_from_raw("manufacturername")
 
     @property
     def swversion(self) -> str:
-        return map_from_dict(self._raw, "swversion")
+        return self.map_from_raw("swversion")
 
     @property
     def recycle(self) -> bool:
-        return map_from_dict(self._raw, "recycle")
+        return self.map_from_raw("recycle")
+
+    @property
+    def config(self) -> SensorConfig:
+        return SensorConfig("", self._uri, raw=self._raw)
+
+    @property
+    def state(self) -> SensorState:
+        return SensorState("", self._uri, raw=self._raw)
 
     def set(self, name: str = None) -> None:
         val = {}

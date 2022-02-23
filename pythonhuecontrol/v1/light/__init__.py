@@ -1,73 +1,66 @@
 from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
 
 
 class LightCapabilitiesStreaming(HueObject):
     @property
     def renderer(self) -> bool:
-        return map_from_dict(self._raw, "capabilities", "streaming", "renderer")
+        return self.map_from_raw("capabilities", "streaming", "renderer")
 
     @property
     def proxy(self) -> bool:
-        return map_from_dict(self._raw, "capabilities", "streaming", "proxy")
+        return self.map_from_raw("capabilities", "streaming", "proxy")
 
 
 class LightCapabilitiesControlCt(HueObject):
     @property
     def min(self) -> int:
-        return map_from_dict(self._raw, "capabilities", "control", "ct", "min")
+        return self.map_from_raw("capabilities", "control", "ct", "min")
 
     @property
     def max(self) -> int:
-        return map_from_dict(self._raw, "capabilities", "control", "ct", "max")
+        return self.map_from_raw("capabilities", "control", "ct", "max")
 
 
 class LightCapabilitiesControl(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.ct = LightCapabilitiesControlCt("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.ct.load_data(self._raw)
-
     @property
     def mindimlevel(self) -> int:
-        return map_from_dict(self._raw, "capabilities", "control", "mindimlevel")
+        return self.map_from_raw("capabilities", "control", "mindimlevel")
 
     @property
     def maxlumen(self) -> int:
-        return map_from_dict(self._raw, "capabilities", "control", "maxlumen")
+        return self.map_from_raw("capabilities", "control", "maxlumen")
 
     @property
     def colorgamuttype(self) -> str:
-        return map_from_dict(self._raw, "capabilities", "control", "colorgamuttype")
+        return self.map_from_raw("capabilities", "control", "colorgamuttype")
 
     @property
     def colorgamut(self) -> list[float, float, float]:
-        return map_from_dict(self._raw, "capabilities", "control", "colorgamut")
+        return self.map_from_raw("capabilities", "control", "colorgamut")
+
+    @property
+    def ct(self) -> LightCapabilitiesControlCt:
+        return LightCapabilitiesControlCt("", self._uri, raw=self._raw)
 
 
 class LightCapabilities(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.streaming = LightCapabilitiesStreaming("", uri, raw=raw)
-        self.control = LightCapabilitiesControl("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.streaming.load_data(self._raw)
-        self.control.load_data(self._raw)
-
     @property
     def certified(self) -> bool:
-        return map_from_dict(self._raw, "capabilities", "certified")
+        return self.map_from_raw("capabilities", "certified")
+
+    @property
+    def streaming(self) -> LightCapabilitiesStreaming:
+        return LightCapabilitiesStreaming("", self._uri, raw=self._raw)
+
+    @property
+    def control(self) -> LightCapabilitiesControl:
+        return LightCapabilitiesControl("", self._uri, raw=self._raw)
 
 
 class LightState(HueObject):
     @property
     def on(self) -> object:
-        return map_from_dict(self._raw, "state", "on")
+        return self.map_from_raw("state", "on")
 
     @on.setter
     def on(self, on: bool) -> None:
@@ -75,7 +68,7 @@ class LightState(HueObject):
 
     @property
     def bri(self) -> int:
-        return map_from_dict(self._raw, "state", "bri")
+        return self.map_from_raw("state", "bri")
 
     @bri.setter
     def bri(self, bri: int) -> None:
@@ -83,7 +76,7 @@ class LightState(HueObject):
 
     @property
     def hue(self) -> int:
-        return map_from_dict(self._raw, "state", "hue")
+        return self.map_from_raw("state", "hue")
 
     @hue.setter
     def hue(self, hue: int) -> None:
@@ -91,7 +84,7 @@ class LightState(HueObject):
 
     @property
     def sat(self) -> int:
-        return map_from_dict(self._raw, "state", "sat")
+        return self.map_from_raw("state", "sat")
 
     @sat.setter
     def sat(self, sat: int) -> None:
@@ -99,7 +92,7 @@ class LightState(HueObject):
 
     @property
     def xy(self) -> list[float, float]:
-        return map_from_dict(self._raw, "state", "xy")
+        return self.map_from_raw("state", "xy")
 
     @xy.setter
     def xy(self, xy: list[float, float]) -> None:
@@ -107,7 +100,7 @@ class LightState(HueObject):
 
     @property
     def ct(self) -> int:
-        return map_from_dict(self._raw, "state", "ct")
+        return self.map_from_raw("state", "ct")
 
     @ct.setter
     def ct(self, ct: int) -> None:
@@ -115,7 +108,7 @@ class LightState(HueObject):
 
     @property
     def alert(self) -> str:
-        return map_from_dict(self._raw, "state", "alert")
+        return self.map_from_raw("state", "alert")
 
     @alert.setter
     def alert(self, alert: str) -> None:
@@ -123,7 +116,7 @@ class LightState(HueObject):
 
     @property
     def effect(self) -> str:
-        return map_from_dict(self._raw, "state", "effect")
+        return self.map_from_raw("state", "effect")
 
     @effect.setter
     def effect(self, effect: str) -> None:
@@ -131,7 +124,7 @@ class LightState(HueObject):
 
     @property
     def colormode(self) -> str:
-        return map_from_dict(self._raw, "state", "colormode")
+        return self.map_from_raw("state", "colormode")
 
     @colormode.setter
     def colormode(self, colormode: str) -> None:
@@ -139,7 +132,7 @@ class LightState(HueObject):
 
     @property
     def reachable(self) -> bool:
-        return map_from_dict(self._raw, "state", "reachable")
+        return self.map_from_raw("state", "reachable")
 
     @reachable.setter
     def reachable(self, reachable: bool) -> None:
@@ -234,19 +227,9 @@ class LightState(HueObject):
 
 
 class Light(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.state = LightState("", uri, raw=raw)
-        self.capabilities = LightCapabilities("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.state.load_data(self._raw)
-        self.capabilities.load_data(self._raw)
-
     @property
     def name(self) -> str:
-        return map_from_dict(self._raw, "name")
+        return self.map_from_raw("name")
 
     @name.setter
     def name(self, name: str) -> None:
@@ -254,31 +237,31 @@ class Light(HueObject):
 
     @property
     def type(self) -> str:
-        return map_from_dict(self._raw, "type")
+        return self.map_from_raw("type")
 
     @property
     def modelid(self) -> str:
-        return map_from_dict(self._raw, "modelid")
+        return self.map_from_raw("modelid")
 
     @property
     def uniqueid(self) -> str:
-        return map_from_dict(self._raw, "uniqueid")
+        return self.map_from_raw("uniqueid")
 
     @property
     def manufacturername(self) -> str:
-        return map_from_dict(self._raw, "manufacturername")
+        return self.map_from_raw("manufacturername")
 
     @property
     def productname(self) -> str:
-        return map_from_dict(self._raw, "productname")
+        return self.map_from_raw("productname")
 
     @property
     def luminaireuniqueid(self) -> str:
-        return map_from_dict(self._raw, "luminaireuniqueid")
+        return self.map_from_raw("luminaireuniqueid")
 
     @property
     def swversion(self) -> str:
-        return map_from_dict(self._raw, "swversion")
+        return self.map_from_raw("swversion")
 
     def switch_on(self) -> None:
         self.state.on = True
@@ -291,6 +274,14 @@ class Light(HueObject):
             self.switch_off()
         else:
             self.switch_on()
+
+    @property
+    def state(self) -> LightState:
+        return LightState("", self._uri, raw=self._raw)
+
+    @property
+    def capabilities(self) -> LightCapabilities:
+        return LightCapabilities("", self._uri, raw=self._raw)
 
     def set(self, name: str = None) -> None:
         val = {}

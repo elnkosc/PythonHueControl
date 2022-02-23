@@ -1,9 +1,7 @@
 import requests
 import time
 import json
-from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
-from pythonhuecontrol.v1 import scan_new
+from pythonhuecontrol.v1 import HueObject, map_from_dict, scan_new
 from pythonhuecontrol.v1.configuration import Configuration
 from pythonhuecontrol.v1.light import Light
 from pythonhuecontrol.v1.group import Group
@@ -12,6 +10,7 @@ from pythonhuecontrol.v1.rule import Rule
 from pythonhuecontrol.v1.scene import Scene
 from pythonhuecontrol.v1.schedule import Schedule
 from pythonhuecontrol.v1.resourcelinks import ResourceLinks
+from pythonhuecontrol.v1.capabilities import Capabilities
 
 
 def discover_bridge() -> str:
@@ -42,93 +41,82 @@ def create_bridge_user(uri: str, device_type: str, generate_client_key: bool = F
 
 
 class Bridge(HueObject):
-    def __init__(self, identity: str, uri: str, clientkey: str = None) -> None:
-        self.registration_uri = uri
-        self.config_uri = uri + "/config"
-        self.groups_uri = uri + "/groups"
-        self.lights_uri = uri + "/lights"
-        self.sensors_uri = uri + "/sensors"
-        self.schedules_uri = uri + "/schedules"
-        self.scenes_uri = uri + "/scenes"
-        self.rules_uri = uri + "/rules"
-        self.resourcelinks_uri = uri + "/resourcelinks"
-        self.new_lights_uri = uri + "/lights/new"
-        self.new_sensors_uri = uri + "/sensors/new"
-        self.clientkey = clientkey
-        super().__init__(identity, uri)
-
     @property
     def light_ids(self) -> dict:
-        return map_from_dict(self._raw, "lights")
+        return self.map_from_raw("lights")
 
     @property
     def group_ids(self) -> dict:
-        return map_from_dict(self._raw, "groups")
+        return self.map_from_raw("groups")
 
     @property
     def sensor_ids(self) -> dict:
-        return map_from_dict(self._raw, "sensors")
+        return self.map_from_raw("sensors")
 
     @property
     def scene_ids(self) -> dict:
-        return map_from_dict(self._raw, "scenes")
+        return self.map_from_raw("scenes")
 
     @property
     def rule_ids(self) -> dict:
-        return map_from_dict(self._raw, "rules")
+        return self.map_from_raw("rules")
 
     @property
     def schedule_ids(self) -> dict:
-        return map_from_dict(self._raw, "schedules")
+        return self.map_from_raw("schedules")
 
     @property
     def resourcelinks_ids(self) -> dict:
-        return map_from_dict(self._raw, "resourcelinks")
+        return self.map_from_raw("resourcelinks")
 
     @property
     def config(self) -> Configuration:
-        return Configuration("", self.config_uri, raw=map_from_dict(self._raw, "config"))
+        return Configuration("", self._uri + "/config", raw=self.map_from_raw("config"))
+
+    @property
+    def capabilities(self) -> Capabilities:
+        return Capabilities("", self._uri + "/capabilities", raw=self.map_from_raw("capabilities"))
 
     def light(self, light_id: str) -> Light:
-        return Light(light_id, self.lights_uri + "/" + light_id,
-                     raw=map_from_dict(self._raw, "lights", light_id))
+        return Light(light_id, self._uri + "/lights/" + light_id,
+                     raw=self.map_from_raw("lights", light_id))
 
     def group(self, group_id: str) -> Group:
-        return Group(group_id, self.groups_uri + "/" + group_id,
-                     raw=map_from_dict(self._raw, "groups", group_id))
+        return Group(group_id, self._uri + "groups/" + group_id,
+                     raw=self.map_from_raw("groups", group_id))
 
     def sensor(self, sensor_id: str) -> Sensor:
-        return Sensor(sensor_id, self.sensors_uri + "/" + sensor_id,
-                      raw=map_from_dict(self._raw, "sensors", sensor_id))
+        return Sensor(sensor_id, self._uri + "/sensors/" + sensor_id,
+                      raw=self.map_from_raw("sensors", sensor_id))
 
     def schedule(self, schedule_id: str) -> Schedule:
-        return Schedule(schedule_id, self.schedules_uri + "/" + schedule_id,
-                        raw=map_from_dict(self._raw, "schedules", schedule_id))
+        return Schedule(schedule_id, self._uri + "/schedules/" + schedule_id,
+                        raw=self.map_from_raw("schedules", schedule_id))
 
     def scene(self, scene_id: str) -> Scene:
-        return Scene(scene_id, self.scenes_uri + "/" + scene_id,
-                     raw=map_from_dict(self._raw, "scenes", scene_id))
+        return Scene(scene_id, self._uri + "/scenes/" + scene_id,
+                     raw=self.map_from_raw("scenes", scene_id))
 
     def rule(self, rule_id: str) -> Rule:
-        return Rule(rule_id, self.rules_uri + "/" + rule_id,
-                    raw=map_from_dict(self._raw, "rules", rule_id))
+        return Rule(rule_id, self._uri + "/rules/" + rule_id,
+                    raw=self.map_from_raw("rules", rule_id))
 
     def resourcelinks(self, resourcelink_id: str) -> ResourceLinks:
-        return ResourceLinks(resourcelink_id, self.resourcelinks_uri + "/" + resourcelink_id,
-                             raw=map_from_dict(self._raw, "resourcelinks", resourcelink_id))
+        return ResourceLinks(resourcelink_id, self._uri + "/resourcelinks/" + resourcelink_id,
+                             raw=self.map_from_raw("resourcelinks", resourcelink_id))
 
     def new_sensors(self) -> list:
-        return scan_new(self.new_sensors_uri)
+        return scan_new(self._uri + "/sensors/new")
 
     def new_lights(self) -> list:
-        return scan_new(self.new_lights_uri)
+        return scan_new(self._uri + "/lights/new")
 
     def search_lights(self) -> None:
-        requests.post(self.lights_uri, data={})
+        requests.post(self._uri + "/lights", data={})
         self.load_data()
 
     def search_sensors(self) -> None:
-        requests.post(self.sensors_uri, data={})
+        requests.post(self._uri + "/sensors", data={})
         self.load_data()
 
     def create_group(self, name: str, lights: dict, group_type: str = "LightGroup",
@@ -138,7 +126,7 @@ class Bridge(HueObject):
         # item class only present for Rooms
         if group_type == "Room":
             json_data["class"] = group_class
-        if self.parse_response(requests.post(self.groups_uri, data=json.dumps(json_data))):
+        if self.parse_response(requests.post(self._uri + "/groups", data=json.dumps(json_data))):
             if self._response_json == "":
                 raise Exception("Unknown Error: Group ID unavailable")
             return self.group(self._response_message)
@@ -149,14 +137,14 @@ class Bridge(HueObject):
         json_data = {"name": name, "localtime": localtime,
                      "command": {"address": address, "method": method, "body": body},
                      "description": description, "status": status, "autodelete": autodelete, "recycle": recycle}
-        if self.parse_response(requests.post(self.schedules_uri, data=json.dumps(json_data))):
+        if self.parse_response(requests.post(self._uri + "/schedules", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Schedule ID unavailable")
             return self.schedule(self._response_message)
 
     def create_rule(self, name: str, status: str, conditions: list, actions: list) -> Rule:
         json_data = {"name": name, "status": status, "conditions": conditions, "actions": actions}
-        if self.parse_response(requests.post(self.rules_uri, data=json.dumps(json_data))):
+        if self.parse_response(requests.post(self._uri + "/rules", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Rule ID unavailable")
             return self.rule(self._response_message)
@@ -170,14 +158,14 @@ class Bridge(HueObject):
         else:
             json_data = {"name": name, "recycle": recycle, "type": scene_type, "lights": lights}
 
-        if self.parse_response(requests.post(self.scenes_uri, data=json.dumps(json_data))):
+        if self.parse_response(requests.post(self._uri + "/scenes", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Scene ID unavailable")
             return self.scene(self._response_message)
 
     def create_lightstates_scene(self, name: str, lights: list, appdata: dict, lightstates: dict) -> Scene:
         json_data = {"name": name, "lights": lights, "appdata": appdata, "lightstates": lightstates}
-        if self.parse_response(requests.post(self.scenes_uri, data=json.dumps(json_data))):
+        if self.parse_response(requests.post(self._uri + "/scenes", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Scene ID unavailable")
             return self.scene(self._response_message)
@@ -197,7 +185,7 @@ class Bridge(HueObject):
             json_data["recycle"] = recycle
         if links is not None:
             json_data["links"] = links
-        if self.parse_response(requests.post(self.resourcelinks_uri, data=json.dumps(json_data))):
+        if self.parse_response(requests.post(self._uri + "/resourcelinks", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Resourcelinks ID unavailable")
             return self.resourcelinks(self._response_message)

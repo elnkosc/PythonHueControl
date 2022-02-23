@@ -1,5 +1,4 @@
-from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
+from pythonhuecontrol.v1 import HueObject, map_from_dict
 
 
 class RuleAction:
@@ -39,7 +38,7 @@ class RuleCondition:
 class Rule(HueObject):
     @property
     def name(self) -> str:
-        return map_from_dict(self._raw, "name")
+        return self.map_from_raw("name")
 
     @name.setter
     def name(self, name: str) -> None:
@@ -47,23 +46,23 @@ class Rule(HueObject):
 
     @property
     def owner(self) -> str:
-        return map_from_dict(self._raw, "owner")
+        return self.map_from_raw("owner")
 
     @property
     def created(self) -> str:
-        return map_from_dict(self._raw, "created")
+        return self.map_from_raw("created")
 
     @property
     def lasttriggered(self) -> str:
-        return map_from_dict(self._raw, "lasttriggered")
+        return self.map_from_raw("lasttriggered")
 
     @property
     def timestriggered(self) -> str:
-        return map_from_dict(self._raw, "timestriggered")
+        return self.map_from_raw("timestriggered")
 
     @property
     def status(self) -> str:
-        return map_from_dict(self._raw, "status")
+        return self.map_from_raw("status")
 
     @status.setter
     def status(self, status: str) -> None:
@@ -71,7 +70,7 @@ class Rule(HueObject):
 
     @property
     def conditions(self) -> list[RuleCondition]:
-        return [RuleCondition(condition) for condition in map_from_dict(self._raw, "conditions")]
+        return [RuleCondition(condition) for condition in self.map_from_raw("conditions")]
 
     @conditions.setter
     def conditions(self, conditions: list[RuleCondition]) -> None:
@@ -82,7 +81,7 @@ class Rule(HueObject):
 
     @property
     def actions(self) -> list[RuleAction]:
-        return [RuleAction(action) for action in map_from_dict(self._raw, "actions")]
+        return [RuleAction(action) for action in self.map_from_raw("actions")]
 
     @actions.setter
     def actions(self, actions: list[RuleAction]) -> None:

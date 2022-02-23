@@ -1,11 +1,10 @@
 from pythonhuecontrol.v1 import HueObject
-from pythonhuecontrol.v1 import map_from_dict
 
 
 class ScheduleCommand(HueObject):
     @property
     def address(self) -> str:
-        return map_from_dict(self._raw, "command", "address")
+        return self.map_from_raw("command", "address")
 
     @address.setter
     def address(self, address: str) -> None:
@@ -13,7 +12,7 @@ class ScheduleCommand(HueObject):
 
     @property
     def method(self) -> str:
-        return map_from_dict(self._raw, "command", "method")
+        return self.map_from_raw("command", "method")
 
     @method.setter
     def method(self, method: str) -> None:
@@ -21,7 +20,7 @@ class ScheduleCommand(HueObject):
 
     @property
     def body(self) -> str:
-        return map_from_dict(self._raw, "command", "body")
+        return self.map_from_raw("command", "body")
 
     @body.setter
     def body(self, body: str) -> None:
@@ -39,17 +38,9 @@ class ScheduleCommand(HueObject):
 
 
 class Schedule(HueObject):
-    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
-        self.command = ScheduleCommand("", uri, raw=raw)
-        super().__init__(identity, uri, raw=raw)
-
-    def load_data(self, raw: dict = None) -> None:
-        super().load_data(raw)
-        self.command.load_data(self._raw)
-
     @property
     def name(self) -> str:
-        return map_from_dict(self._raw, "name")
+        return self.map_from_raw("name")
 
     @name.setter
     def name(self, name: str) -> None:
@@ -57,7 +48,7 @@ class Schedule(HueObject):
 
     @property
     def description(self) -> str:
-        return map_from_dict(self._raw, "description")
+        return self.map_from_raw("description")
 
     @description.setter
     def description(self, description: str) -> None:
@@ -65,7 +56,7 @@ class Schedule(HueObject):
 
     @property
     def localtime(self) -> str:
-        return map_from_dict(self._raw, "localtime")
+        return self.map_from_raw("localtime")
 
     @localtime.setter
     def localtime(self, localtime: str) -> None:
@@ -73,7 +64,7 @@ class Schedule(HueObject):
 
     @property
     def starttime(self) -> str:
-        return map_from_dict(self._raw, "starttime")
+        return self.map_from_raw("starttime")
 
     @starttime.setter
     def starttime(self, starttime: str) -> None:
@@ -81,7 +72,7 @@ class Schedule(HueObject):
 
     @property
     def status(self) -> str:
-        return map_from_dict(self._raw, "status")
+        return self.map_from_raw("status")
 
     @status.setter
     def status(self, status: str) -> None:
@@ -89,11 +80,15 @@ class Schedule(HueObject):
 
     @property
     def autodelete(self) -> bool:
-        return map_from_dict(self._raw, "autodelete")
+        return self.map_from_raw("autodelete")
 
     @autodelete.setter
     def autodelete(self, autodelete: bool) -> None:
         self.set(autodelete=autodelete)
+
+    @property
+    def command(self) -> ScheduleCommand:
+        return ScheduleCommand("", self._uri, raw=self._raw)
 
     def set(self, name: str = None, description: str = None, localtime: str = None, starttime: str = None,
             status: str = None, autodelete: bool = None) -> None:
