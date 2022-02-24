@@ -1,5 +1,6 @@
 import time
 import random
+import sys
 from pythonhuecontrol.v1.bridge import Bridge
 from pythonhuecontrol.v1.bridge import create_bridge_user
 from pythonhuecontrol.v1.bridge import discover_bridge
@@ -12,7 +13,11 @@ if __name__ == '__main__':
         print("Could not find bridge")
         exit(1)
 
-    username = input("Please provide user ID of bridge (or leave empty to create new user: ")
+    if len(sys.argv) > 1:
+        username = sys.argv[1]
+    else:
+        username = input("Please provide user ID of bridge (or leave empty to create new user: ")
+
     if len(username) == 0:
         print("Please push link button on bridge...")
         username, clientkey = create_bridge_user("http://" + ip + "/api", "PythonHueControl#TestApp")
