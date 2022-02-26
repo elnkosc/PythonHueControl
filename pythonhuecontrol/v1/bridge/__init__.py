@@ -82,7 +82,7 @@ class Bridge(HueObject):
                      raw=self.map_from_raw("lights", light_id))
 
     def group(self, group_id: str) -> Group:
-        return Group(group_id, self._uri + "groups/" + group_id,
+        return Group(group_id, self._uri + "/groups/" + group_id,
                      raw=self.map_from_raw("groups", group_id))
 
     def sensor(self, sensor_id: str) -> Sensor:
@@ -118,6 +118,30 @@ class Bridge(HueObject):
     def search_sensors(self) -> None:
         requests.post(self._uri + "/sensors", data={})
         self.load_data()
+
+    def all_on(self) -> None:
+        self.group("0").switch_on()
+
+    def all_off(self) -> None:
+        self.group("0").switch_off()
+
+    def all_single_blink(self) -> None:
+        self.group("0").single_blink()
+
+    def all_multiple_blinks(self) -> None:
+        self.group("0").multiple_blinks()
+
+    def all_set_rgb_color(self, red: int, green: int, blue: int) -> None:
+        self.group("0").set_rgb_color(red, green, blue)
+
+    def all_set_hex_color(self, hex_color: str) -> None:
+        self.group("0").set_hex_color(hex_color)
+
+    def all_color_loop(self) -> None:
+        self.group("0").color_loop()
+
+    def all_brightness_loop(self) -> None:
+        self.group("0").brightness_loop()
 
     def create_group(self, name: str, lights: dict, group_type: str = "LightGroup",
                      group_class: str = "Other") -> Group:

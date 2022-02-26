@@ -1,3 +1,5 @@
+import time
+from rgbxy import Converter, GamutA, GamutB, GamutC
 from pythonhuecontrol.v1 import HueObject
 
 
@@ -227,6 +229,11 @@ class LightState(HueObject):
 
 
 class Light(HueObject):
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self._state = LightState(identity, uri, raw)
+        self._capabilities = LightCapabilities(identity, uri, raw)
+        super().__init__(identity, uri, raw)
+
     @property
     def name(self) -> str:
         return self.map_from_raw("name")
@@ -275,13 +282,54 @@ class Light(HueObject):
         else:
             self.switch_on()
 
+    def set_rgb_color(self, red: int, green: int, blue: int) -> None:
+        gamut = self.capabilities.control.colorgamuttype
+        if gamut is None:
+            return
+        if gamut == "A":
+            converter = Converter(GamutA)
+        elif gamut == "C":
+            converter = Converter(GamutB)
+        else:
+            converter = Converter(GamutC)
+        self.state.xy = converter.rgb_to_xy(red % 256, green % 256, blue % 256)
+
+    def set_hex_color(self, hex_color) -> None:
+        if len(hex_color) == 6:
+            self.set_rgb_color(int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16))
+
+    def single_blink(self) -> None:
+        self.state.alert = "select"
+
+    def multiple_blinks(self) -> None:
+        self.state.alert = "lselect"
+
+    def color_loop(self) -> None:
+        self.state.effect = "colorloop"
+
+    def brightness_loop(self) -> None:
+        bri = self.state.bri
+        effect_duration = 20.0
+
+        transitiontime = int((254-bri)/effect_duration)
+        self.state.set(bri=254, transitiontime=transitiontime)
+        time.sleep(transitiontime/10)
+
+        transitiontime = int(effect_duration)
+        self.state.set(bri=0, transitiontime=transitiontime)
+        time.sleep(transitiontime/10)
+
+        transitiontime = int(bri/effect_duration)
+        self.state.set(bri=bri, transitiontime=transitiontime)
+        time.sleep(transitiontime/10)
+
     @property
     def state(self) -> LightState:
-        return LightState("", self._uri, raw=self._raw)
+        return self._state
 
     @property
     def capabilities(self) -> LightCapabilities:
-        return LightCapabilities("", self._uri, raw=self._raw)
+        return self._capabilities
 
     def set(self, name: str = None) -> None:
         val = {}

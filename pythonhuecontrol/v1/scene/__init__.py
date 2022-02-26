@@ -63,6 +63,11 @@ class SceneLightStateList(HueObject):
 
 
 class Scene(HueObject):
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self._appdata = SceneAppData(identity, uri, raw)
+        self._lightstates = SceneLightStateList(identity, uri, raw)
+        super().__init__(identity, uri, raw)
+
     @property
     def name(self) -> str:
         return self.map_from_raw("name")
@@ -117,11 +122,11 @@ class Scene(HueObject):
 
     @property
     def appdata(self) -> SceneAppData:
-        return SceneAppData("", self._uri, raw=self._raw)
+        return self._appdata
 
     @property
     def lightstates(self) -> SceneLightStateList:
-        return SceneLightStateList("", self._uri, raw=self._raw)
+        return self._lightstates
 
     def set(self, name: str = None, lights: list[str] = None) -> None:
         val = {}

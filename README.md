@@ -17,7 +17,7 @@ This Python package contains the classes and functions to interface with the Phi
       * capabilities - used and available resources in bridge
     * v2 - UNDER CONSTRUCTION
 
-Details can be found in teh README files for the different sub-packages.  
+Details can be found in the README files for the different sub-packages.  
 
 Hue Bridges up to software version 1948086000 support API V1. From version 1948086000 API V2 is support in addition to V1. In the future V1 will be depricated.
 

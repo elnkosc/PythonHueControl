@@ -26,6 +26,22 @@
   `rule(rule_id)`  
   Methods to create objects from bridge assets.  
   RETURNS: object based on a provided id.  
+- `all_on()`  
+  Switches all lights on.
+- `all_off()`  
+  Switches all lights off.
+- `all_single_blink()`  
+  Let's all lights blink once.
+- `all_multiple_blinks()`  
+  Let's all lights blink for 15 seconds.
+- `all_set_rgb_color(red, green, blue)`  
+  Switches all color lights to provided RGB.
+- `all_set_hex_color(hexcolor)`  
+  Switches all color lights to provided hexadecimal RGB.
+- `all_color_loop()`  
+  Let's all color lights go through their full color palette.
+- `all_brightness_loop()`  
+  Let's all lights go through their full brightness. 
 - `search_lights()`  
   `search_sensors()`  
   Start searching for new lights/sensors.

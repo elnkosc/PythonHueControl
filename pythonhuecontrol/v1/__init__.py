@@ -36,10 +36,7 @@ class HueObject:
         self._response_status_code = 0
         self._response_json = None
         self._response_message = ""
-        if raw is None:
-            self.load_data()
-        else:
-            self.load_data(raw)
+        self.load_data(raw)
 
     @property
     def identity(self):
@@ -52,22 +49,24 @@ class HueObject:
     # parse response from requests.response object and return whether REST call was successful
     # in case of successful API call, if ID is included in the response, _response_message holds the ID
     def parse_response(self, response: requests.Response) -> bool:
+        self._response_message = ""
         self._response_status_code = response.status_code
         self._response_json = response.json()
-        if self._response_status_code == 200:
-            if isinstance(self._response_json, list) and "success" in self._response_json[0] and \
-                    "id" in self._response_json[0]["success"]:
-                self._response_message = self._response_json[0]["success"]["id"]
-            else:
-                self._response_message = ""
-            return True
-        else:
-            if isinstance(self._response_json, list) and len(self._response_json) > 0 and \
-                    "error" in self._response_json[0] and "description" in self._response_json[0]["error"]:
-                self._response_message = self._response_json[0]["error"]["description"]
-            else:
-                self._response_message = "Unknown error"
+
+        if self._response_status_code != 200:
+            self._response_message = "Unknown error"
             return False
+
+        if isinstance(self._response_json, list) and len(self._response_json) > 0:
+            if "success" in self._response_json[0] and "id" in self._response_json[0]["success"]:
+                self._response_message = self._response_json[0]["success"]["id"]
+            elif "error" in self._response_json[0]:
+                if "description" in self._response_json[0]["error"]:
+                    self._response_message = self._response_json[0]["error"]["description"]
+                else:
+                    self._response_message = "Unknown error"
+
+        return True
 
     # get data from REST API. If provided, directly assign to prevent needing to make API call
     def load_data(self, raw: dict = None) -> None:

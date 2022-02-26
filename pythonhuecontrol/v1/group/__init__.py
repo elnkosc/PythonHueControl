@@ -1,4 +1,6 @@
 from pythonhuecontrol.v1 import HueObject
+from rgbxy import Converter, GamutB
+import time
 
 
 class GroupState(HueObject):
@@ -223,6 +225,13 @@ class GroupLightLevel(HueObject):
 
 
 class Group(HueObject):
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self._state = GroupState(identity, uri, raw)
+        self._action = GroupAction(identity, uri, raw)
+        self._presence = GroupPresence(identity, uri, raw)
+        self._lightlevel = GroupLightLevel(identity, uri, raw)
+        super().__init__(identity, uri, raw)
+
     @property
     def name(self) -> str:
         return self.map_from_raw("name")
@@ -276,26 +285,51 @@ class Group(HueObject):
         self.set(recycle=recycle)
 
     def switch_on(self) -> None:
-        self.action.on = True
+        self._action.on = True
 
     def switch_off(self) -> None:
-        self.action.on = False
+        self._action.on = False
+
+    def set_rgb_color(self, red: int, green: int, blue: int) -> None:
+        # gamutB is chosen 'average' as lights might have different individual gamuts
+        converter = Converter(GamutB)
+        self._action.xy = converter.rgb_to_xy(red % 256, green % 256, blue % 256)
+
+    def set_hex_color(self, hex_color) -> None:
+        if len(hex_color) == 6:
+            self.set_rgb_color(int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16))
+
+    def single_blink(self) -> None:
+        self._action.alert = "select"
+
+    def multiple_blinks(self) -> None:
+        self._action.alert = "lselect"
+
+    def color_loop(self) -> None:
+        self._action.effect = "colorloop"
+
+    def brightness_loop(self) -> None:
+        self._action.bri = 0
+        effect_duration = 20.0
+        transitiontime = int(254/effect_duration)
+        self._action.set(bri=254, transitiontime=transitiontime)
+        time.sleep(effect_duration/10)
 
     @property
     def state(self) -> GroupState:
-        return GroupState("", self._uri, raw=self._raw)
+        return self._state
 
     @property
     def action(self) -> GroupAction:
-        return GroupAction("", self._uri, raw=self._raw)
+        return self._action
 
     @property
     def presence(self) -> GroupPresence:
-        return GroupPresence("", self._uri, raw=self._raw)
+        return self._presence
 
     @property
     def lightlevel(self) -> GroupLightLevel:
-        return GroupLightLevel("", self._uri, raw=self._raw)
+        return self._lightlevel
 
     def set(self, name: str = None, lights: list[str] = None, sensors: list[str] = None, group_class: str = None,
             recycle: bool = None):

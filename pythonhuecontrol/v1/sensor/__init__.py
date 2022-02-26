@@ -54,6 +54,11 @@ class SensorConfig(HueObject):
 
 
 class Sensor(HueObject):
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self._state = SensorState(identity, uri, raw)
+        self._config = SensorConfig(identity, uri, raw)
+        super().__init__(identity, uri, raw)
+
     @property
     def name(self) -> str:
         return self.map_from_raw("name")
@@ -88,11 +93,11 @@ class Sensor(HueObject):
 
     @property
     def config(self) -> SensorConfig:
-        return SensorConfig("", self._uri, raw=self._raw)
+        return self._config
 
     @property
     def state(self) -> SensorState:
-        return SensorState("", self._uri, raw=self._raw)
+        return self._state
 
     def set(self, name: str = None) -> None:
         val = {}

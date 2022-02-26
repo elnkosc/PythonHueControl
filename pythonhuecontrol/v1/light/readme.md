@@ -46,3 +46,15 @@
   Switches off the light.  
 - `.toggle()`    
   Toggles the light between on and off.  
+- `.set_rgb_color(red, green, blue)`  
+  Set RGB color for color lights
+- `.set_hex_color(hex_color)`  
+  Set RGB color for color lights by providing hex string
+- `.single_blink()`  
+  Let light blink once
+- `.multiple_blinks()`  
+  Let light blink for 15 seconds
+- `.color_loop()`  
+  Let color light go through its full color palette
+- `.brightness_loop()`  
+  Let light go through its full brightness range

@@ -54,6 +54,10 @@ class DeviceTypes(HueObject):
 
 
 class SWUpdate(HueObject):
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self._devicetypes = DeviceTypes(identity, uri, raw)
+        super().__init__(identity, uri, raw)
+
     @property
     def checkforupdate(self) -> bool:
         return self.map_from_raw("swupdate", "checkforupdate")
@@ -92,7 +96,7 @@ class SWUpdate(HueObject):
 
     @property
     def devicetypes(self):
-        return DeviceTypes("", self._uri, raw=self._raw)
+        return self._devicetypes
 
     def set(self, checkforupdate: bool = None, notify: bool = None, url: str = None, text: str = None) -> None:
         val = {"swupdate": {}}
@@ -108,6 +112,10 @@ class SWUpdate(HueObject):
 
 
 class SWUpdate2(HueObject):
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self._autoinstall = AutoInstall(identity, uri, raw)
+        super().__init__(identity, uri, raw)
+
     @property
     def bridge(self) -> dict:
         return self.map_from_raw("swupdate2", "bridge")
@@ -142,7 +150,7 @@ class SWUpdate2(HueObject):
 
     @property
     def autoinstall(self) -> AutoInstall:
-        return AutoInstall("", self._uri, raw=self._raw)
+        return self._autoinstall
 
     def set(self, checkforupdate: bool = None, install: bool = None) -> None:
         val = {"swupdate2": {}}
@@ -154,6 +162,13 @@ class SWUpdate2(HueObject):
 
 
 class Configuration(HueObject):
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self._swupdate = SWUpdate(identity, uri, raw)
+        self._swupdate2 = SWUpdate2(identity, uri, raw)
+        self._internetservices = InternetServices(identity, uri, raw)
+        self._backup = Backup(identity, uri, raw)
+        super().__init__(identity, uri, raw)
+
     @property
     def name(self) -> str:
         return self.map_from_raw("name")
@@ -304,19 +319,19 @@ class Configuration(HueObject):
 
     @property
     def swupdate(self) -> SWUpdate:
-        return SWUpdate("", self._uri, raw=self._raw)
+        return self._swupdate
 
     @property
     def swupdate2(self) -> SWUpdate2:
-        return SWUpdate2("", self._uri, raw=self._raw)
+        return self._swupdate2
 
     @property
     def internetservices(self) -> InternetServices:
-        return InternetServices("", self._uri, raw=self._raw)
+        return self._internetservices
 
     @property
     def backup(self) -> Backup:
-        return Backup("", self._uri, raw=self._raw)
+        return self._backup
 
     def set(self, name: str = None, proxyaddress: str = None, proxyport: int = None, linkbutton: bool = None,
             ipaddress: str = None, netmask: str = None, gateway: str = None, dhcp: bool = None, utc: str = None,

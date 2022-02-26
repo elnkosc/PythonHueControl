@@ -38,6 +38,10 @@ class ScheduleCommand(HueObject):
 
 
 class Schedule(HueObject):
+    def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
+        self._command = ScheduleCommand(identity, uri, raw)
+        super().__init__(identity, uri, raw)
+
     @property
     def name(self) -> str:
         return self.map_from_raw("name")
@@ -88,7 +92,7 @@ class Schedule(HueObject):
 
     @property
     def command(self) -> ScheduleCommand:
-        return ScheduleCommand("", self._uri, raw=self._raw)
+        return self._command
 
     def set(self, name: str = None, description: str = None, localtime: str = None, starttime: str = None,
             status: str = None, autodelete: bool = None) -> None:

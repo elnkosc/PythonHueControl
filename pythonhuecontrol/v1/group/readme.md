@@ -48,3 +48,15 @@
   Switches on the lights in the group.  
 - `.switch_off()`    
   Switches off the lights in the group.  
+- `.set_rgb_color(red, green, blue)`  
+  Set RGB color for color lights in the group
+- `.set_hex_color(hex_color)`  
+  Set RGB color for color lights in the group by providing hex string
+- `.single_blink()`  
+  Let lights in the group blink once
+- `.multiple_blinks()`  
+  Let lights in the group blink for 15 seconds
+- `.color_loop()`  
+  Let color lights in the group go through its full color palette
+- `.brightness_loop()`  
+  Let lights in the group go through their full brightness range
