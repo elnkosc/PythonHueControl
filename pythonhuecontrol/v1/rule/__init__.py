@@ -1,4 +1,4 @@
-from pythonhuecontrol.v1 import HueObject, map_from_dict
+from pythonhuecontrol.v1 import HueObject, map_from_dict, construct_dict
 
 
 class RuleAction:
@@ -91,13 +91,4 @@ class Rule(HueObject):
         self.set(actions=action_list)
 
     def set(self, name: str = None, status: str = None, conditions: list[dict] = None, actions: list[dict] = None):
-        val = {}
-        if name is not None:
-            val["name"] = name
-        if status is not None:
-            val["status"] = status
-        if conditions is not None:
-            val["conditions"] = conditions
-        if actions is not None:
-            val["actions"] = actions
-        self.set_data("", val)
+        self.set_data("", construct_dict(name=name, status=status, conditions=conditions, actions=actions))

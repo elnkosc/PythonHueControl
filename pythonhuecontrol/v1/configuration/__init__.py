@@ -1,4 +1,4 @@
-from pythonhuecontrol.v1 import HueObject
+from pythonhuecontrol.v1 import HueObject, construct_dict
 
 
 class Backup(HueObject):
@@ -99,16 +99,8 @@ class SWUpdate(HueObject):
         return self._devicetypes
 
     def set(self, checkforupdate: bool = None, notify: bool = None, url: str = None, text: str = None) -> None:
-        val = {"swupdate": {}}
-        if checkforupdate is not None:
-            val["swupdate"]["checkforupdate"] = checkforupdate
-        if notify is not None:
-            val["swupdate"]["notify"] = notify
-        if url is not None:
-            val["swupdate"]["url"] = url
-        if text is not None:
-            val["swupdate"]["text"] = text
-        self.set_data("", val)
+        self.set_data("", construct_dict (group_name="swupdate", checkforupdate=checkforupdate, notify=notify,
+                                          url=url, text=text))
 
 
 class SWUpdate2(HueObject):
@@ -153,12 +145,7 @@ class SWUpdate2(HueObject):
         return self._autoinstall
 
     def set(self, checkforupdate: bool = None, install: bool = None) -> None:
-        val = {"swupdate2": {}}
-        if checkforupdate is not None:
-            val["swupdate2"]["checkforupdate"] = checkforupdate
-        if install is not None:
-            val["swupdate2"]["install"] = install
-        self.set_data("", val)
+        self.set_data("", construct_dict(group_name="swupdate2", checkforupdate=checkforupdate, install=install))
 
 
 class Configuration(HueObject):
@@ -336,29 +323,7 @@ class Configuration(HueObject):
     def set(self, name: str = None, proxyaddress: str = None, proxyport: int = None, linkbutton: bool = None,
             ipaddress: str = None, netmask: str = None, gateway: str = None, dhcp: bool = None, utc: str = None,
             timezone: str = None, zigbeechannel: int = None, touchlink: bool = None) -> None:
-        val = {}
-        if name is not None:
-            val["name"] = name
-        if proxyaddress is not None:
-            val["proxyaddress"] = proxyaddress
-        if proxyport is not None:
-            val["proxyport"] = proxyport
-        if linkbutton is not None:
-            val["linkbutton"] = linkbutton
-        if ipaddress is not None:
-            val["ipaddress"] = ipaddress
-        if netmask is not None:
-            val["netmask"] = netmask
-        if gateway is not None:
-            val["gateway"] = gateway
-        if dhcp is not None:
-            val["dhcp"] = dhcp
-        if utc is not None:
-            val["UTC"] = utc
-        if timezone is not None:
-            val["timezone"] = timezone
-        if zigbeechannel is not None:
-            val["zigbeechannel"] = zigbeechannel
-        if touchlink is not None:
-            val["touchlink"] = touchlink
-        self.set_data("", val)
+        self.set_data("", construct_dict(name=name, proxyaddress=proxyaddress, proxyport=proxyport,
+                                         linkbutton=linkbutton, ipaddress=ipaddress, netmask=netmask, gateway=gateway,
+                                         dhcp=dhcp, UTC=utc, timezone=timezone, zigbeechannel=zigbeechannel,
+                                         touchlink=touchlink))

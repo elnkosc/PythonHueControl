@@ -1,13 +1,13 @@
 import requests
 import time
 import json
-from pythonhuecontrol.v1 import HueObject, map_from_dict, scan_new
+from pythonhuecontrol.v1 import HueObject, map_from_dict, scan_new, construct_dict
 from pythonhuecontrol.v1.configuration import Configuration
 from pythonhuecontrol.v1.light import Light
 from pythonhuecontrol.v1.group import Group
 from pythonhuecontrol.v1.sensor import Sensor
-from pythonhuecontrol.v1.rule import Rule
-from pythonhuecontrol.v1.scene import Scene
+from pythonhuecontrol.v1.rule import Rule, RuleCondition, RuleAction
+from pythonhuecontrol.v1.scene import Scene, SceneLightStateList
 from pythonhuecontrol.v1.schedule import Schedule
 from pythonhuecontrol.v1.resourcelinks import ResourceLinks
 from pythonhuecontrol.v1.capabilities import Capabilities
@@ -143,13 +143,14 @@ class Bridge(HueObject):
     def all_brightness_loop(self) -> None:
         self.group("0").brightness_loop()
 
-    def create_group(self, name: str, lights: dict, group_type: str = "LightGroup",
+    def create_group(self, name: str, lights: list[str], group_type: str = "LightGroup",
                      group_class: str = "Other") -> Group:
-        json_data = {"name": name, "type": group_type, "lights": lights}
+        json_data = construct_dict(name=name, type=group_type, lights=lights)
 
         # item class only present for Rooms
         if group_type == "Room":
             json_data["class"] = group_class
+
         if self.parse_response(requests.post(self._uri + "/groups", data=json.dumps(json_data))):
             if self._response_json == "":
                 raise Exception("Unknown Error: Group ID unavailable")
@@ -158,16 +159,17 @@ class Bridge(HueObject):
     def create_schedule(self, name: str, localtime: str, address: str, method: str, body: dict,
                         description: str = "", status: str = "enabled", autodelete: bool = True,
                         recycle: bool = False) -> Schedule:
-        json_data = {"name": name, "localtime": localtime,
-                     "command": {"address": address, "method": method, "body": body},
-                     "description": description, "status": status, "autodelete": autodelete, "recycle": recycle}
+        json_data = construct_dict(name=name, localtime=localtime,
+                                   command={"address": address, "method": method, "body": body},
+                                   description=description, status=status, autodelete=autodelete, recycle=recycle)
         if self.parse_response(requests.post(self._uri + "/schedules", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Schedule ID unavailable")
             return self.schedule(self._response_message)
 
-    def create_rule(self, name: str, status: str, conditions: list, actions: list) -> Rule:
-        json_data = {"name": name, "status": status, "conditions": conditions, "actions": actions}
+    def create_rule(self, name: str, conditions: list[RuleCondition], actions: list[RuleAction]) -> Rule:
+        json_data = construct_dict(name=name,conditions=[x.as_dict() for x in conditions],
+                                   actions=[y.as_dict() for y in actions])
         if self.parse_response(requests.post(self._uri + "/rules", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Rule ID unavailable")
@@ -178,17 +180,18 @@ class Bridge(HueObject):
             raise Exception("Either lights or group should be specified")
 
         if group is not None:
-            json_data = {"name": name, "recycle": recycle, "type": scene_type, "group": group}
+            json_data = construct_dict(name=name, recycle=recycle, type=scene_type, group=group)
         else:
-            json_data = {"name": name, "recycle": recycle, "type": scene_type, "lights": lights}
+            json_data = construct_dict(name=name, recycle=recycle, type=scene_type, lights=lights)
 
         if self.parse_response(requests.post(self._uri + "/scenes", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Scene ID unavailable")
             return self.scene(self._response_message)
 
-    def create_lightstates_scene(self, name: str, lights: list, appdata: dict, lightstates: dict) -> Scene:
-        json_data = {"name": name, "lights": lights, "appdata": appdata, "lightstates": lightstates}
+    def create_lightstates_scene(self, name: str, lights: list, appdata: dict,
+                                 lightstates: SceneLightStateList) -> Scene:
+        json_data = construct_dict(name=name, lights=lights, appdata=appdata, lightstates=lightstates.as_dict())
         if self.parse_response(requests.post(self._uri + "/scenes", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Scene ID unavailable")
@@ -196,19 +199,8 @@ class Bridge(HueObject):
 
     def create_resourcelinks(self, name: str, description: str = None, resource_type: str = None, classid: int = None,
                              owner: str = None, recycle: bool = None, links: list[str] = None) -> ResourceLinks:
-        json_data = {"name": name}
-        if description is not None:
-            json_data["description"] = description
-        if resource_type is not None:
-            json_data["type"] = type
-        if classid is not None:
-            json_data["classid"] = classid
-        if owner is not None:
-            json_data["owner"] = owner
-        if recycle is not None:
-            json_data["recycle"] = recycle
-        if links is not None:
-            json_data["links"] = links
+        json_data = construct_dict(name=name, description=description, type=resource_type, classid=classid,
+                                   owner=owner, recycle=recycle, links=links)
         if self.parse_response(requests.post(self._uri + "/resourcelinks", data=json.dumps(json_data))):
             if self._response_message == "":
                 raise Exception("Unknown Error: Resourcelinks ID unavailable")

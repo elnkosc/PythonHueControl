@@ -1,4 +1,4 @@
-from pythonhuecontrol.v1 import HueObject
+from pythonhuecontrol.v1 import HueObject, construct_dict
 
 
 class ResourceLinks(HueObject):
@@ -60,19 +60,5 @@ class ResourceLinks(HueObject):
 
     def set(self, name: str = None, description: str = None, resource_type: str = None, classid: int = None,
             owner: str = None, recycle: bool = None, links: list[str] = None) -> None:
-        val = {}
-        if name is not None:
-            val["name"] = name
-        if description is not None:
-            val["description"] = description
-        if resource_type is not None:
-            val["type"] = type
-        if classid is not None:
-            val["classid"] = classid
-        if owner is not None:
-            val["owner"] = owner
-        if recycle is not None:
-            val["recycle"] = recycle
-        if links is not None:
-            val["links"] = links
-        self.set_data("", val)
+        self.set_data("", construct_dict(name=name, description=description, type=resource_type, classid=classid,
+                                         owner=owner, recycle=recycle, links=links))

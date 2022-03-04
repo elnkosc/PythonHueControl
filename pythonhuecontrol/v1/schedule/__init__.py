@@ -1,4 +1,4 @@
-from pythonhuecontrol.v1 import HueObject
+from pythonhuecontrol.v1 import HueObject, construct_dict
 
 
 class ScheduleCommand(HueObject):
@@ -27,14 +27,7 @@ class ScheduleCommand(HueObject):
         self.set(body=body)
 
     def set(self, address: str = None, method: str = None, body: str = None) -> None:
-        val = {"command": {}}
-        if address is not None:
-            val["command"]["address"] = address
-        if method is not None:
-            val["command"]["method"] = method
-        if body is not None:
-            val["command"]["body"] = body
-        self.set_data("", val)
+        self.set_data("", construct_dict(group_name="command", address=address, method=method, body=body))
 
 
 class Schedule(HueObject):
@@ -96,17 +89,5 @@ class Schedule(HueObject):
 
     def set(self, name: str = None, description: str = None, localtime: str = None, starttime: str = None,
             status: str = None, autodelete: bool = None) -> None:
-        val = {}
-        if name is not None:
-            val["name"] = name
-        if description is not None:
-            val["description"] = description
-        if localtime is not None:
-            val["localtime"] = localtime
-        if starttime is not None:
-            val["starttime"] = starttime
-        if status is not None:
-            val["status"] = status
-        if autodelete is not None:
-            val["autodelete"] = autodelete
-        self.set_data("", val)
+        self.set_data("", construct_dict(name=name, description=description, localtime=localtime, starttime=starttime,
+                                         status=status, autodelete=autodelete))

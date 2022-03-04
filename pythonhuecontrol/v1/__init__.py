@@ -17,6 +17,20 @@ def map_from_dict(dictionary: dict, *items: str, default: object = None):
     return default
 
 
+# construct dictionary from parameters
+def construct_dict(group_name: str = None, **kwargs) -> dict:
+    d = {}
+    if group_name is not None:
+        d[group_name] = {}
+    for key, value in kwargs.items():
+        if value is not None:
+            if group_name is not None:
+                d[group_name][key] = value
+            else:
+                d[key] = value
+    return d
+
+
 # scan for new hue-devices using provided uri
 def scan_new(scan_uri: str) -> list:
     new_items = []

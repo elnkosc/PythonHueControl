@@ -1,6 +1,6 @@
 import time
 from rgbxy import Converter, GamutA, GamutB, GamutC
-from pythonhuecontrol.v1 import HueObject
+from pythonhuecontrol.v1 import HueObject, construct_dict
 
 
 class LightCapabilitiesStreaming(HueObject):
@@ -192,40 +192,10 @@ class LightState(HueObject):
             ct: int = None, alert: str = None, effect: str = None, colormode: str = None,
             reachable: bool = None, transitiontime: int = None, bri_inc: int = None, hue_inc: int = None,
             sat_inc: int = None, xy_inc: list[float, float] = None, ct_inc: int = None) -> None:
-        val = {}
-        if on is not None:
-            val["on"] = on
-        if bri is not None:
-            val["bri"] = bri
-        if hue is not None:
-            val["hue"] = hue
-        if sat is not None:
-            val["sat"] = sat
-        if xy is not None:
-            val["xy"] = xy
-        if ct is not None:
-            val["ct"] = ct
-        if alert is not None:
-            val["alert"] = alert
-        if effect is not None:
-            val["effect"] = effect
-        if colormode is not None:
-            val["colormode"] = colormode
-        if reachable is not None:
-            val["reachable"] = reachable
-        if transitiontime is not None:
-            val["transitiontime"] = transitiontime
-        if bri_inc is not None:
-            val["bri_inc"] = bri_inc
-        if hue_inc is not None:
-            val["hue_inc"] = hue_inc
-        if sat_inc is not None:
-            val["sat_inc"] = sat_inc
-        if xy_inc is not None:
-            val["xy_inc"] = xy_inc
-        if ct_inc is not None:
-            val["ct_inc"] = ct_inc
-        self.set_data("state", val)
+        self.set_data("state", construct_dict(on=on, bri=bri, hue=hue, sat=sat, xy=xy,
+                                              ct=ct, alert=alert, effect=effect, colormode=colormode,
+                                              reachable=reachable, transitiontime=transitiontime, bri_inc=bri_inc,
+                                              hue_inc=hue_inc, sat_inc=sat_inc, xy_inc=xy_inc, ct_inc=ct_inc))
 
 
 class Light(HueObject):
@@ -311,17 +281,17 @@ class Light(HueObject):
         bri = self.state.bri
         effect_duration = 20.0
 
-        transitiontime = int((254-bri)/effect_duration)
+        transitiontime = int((254 - bri) / effect_duration)
         self.state.set(bri=254, transitiontime=transitiontime)
-        time.sleep(transitiontime/10)
+        time.sleep(transitiontime / 10)
 
         transitiontime = int(effect_duration)
         self.state.set(bri=0, transitiontime=transitiontime)
-        time.sleep(transitiontime/10)
+        time.sleep(transitiontime / 10)
 
-        transitiontime = int(bri/effect_duration)
+        transitiontime = int(bri / effect_duration)
         self.state.set(bri=bri, transitiontime=transitiontime)
-        time.sleep(transitiontime/10)
+        time.sleep(transitiontime / 10)
 
     @property
     def state(self) -> LightState:
@@ -332,7 +302,4 @@ class Light(HueObject):
         return self._capabilities
 
     def set(self, name: str = None) -> None:
-        val = {}
-        if name is not None:
-            val["name"] = name
-        self.set_data("", val)
+        self.set_data("", construct_dict(name=name))

@@ -1,4 +1,4 @@
-from pythonhuecontrol.v1 import HueObject
+from pythonhuecontrol.v1 import HueObject, construct_dict
 
 
 class SensorState(HueObject):
@@ -23,10 +23,7 @@ class SensorState(HueObject):
         return self.map_from_raw("state", "lastupdated")
 
     def set(self, presence: bool = None) -> None:
-        val = {}
-        if presence is not None:
-            val["presence"] = presence
-        self.set_data("state", val)
+        self.set_data("state", construct_dict(presence=presence))
 
 
 class SensorConfig(HueObject):
@@ -47,10 +44,7 @@ class SensorConfig(HueObject):
         return self.map_from_raw("config", "battery")
 
     def set(self, on: bool = None) -> None:
-        val = {}
-        if on is not None:
-            val["on"] = on
-        self.set_data("config", val)
+        self.set_data("config", construct_dict(on=on))
 
 
 class Sensor(HueObject):
@@ -100,7 +94,4 @@ class Sensor(HueObject):
         return self._state
 
     def set(self, name: str = None) -> None:
-        val = {}
-        if name is not None:
-            val["name"] = name
-        self.set_data("", val)
+        self.set_data("", construct_dict(name=name))

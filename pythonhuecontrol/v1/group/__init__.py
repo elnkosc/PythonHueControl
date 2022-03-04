@@ -1,4 +1,4 @@
-from pythonhuecontrol.v1 import HueObject
+from pythonhuecontrol.v1 import HueObject, construct_dict
 from rgbxy import Converter, GamutB
 import time
 
@@ -138,38 +138,10 @@ class GroupAction(HueObject):
             ct: int = None, alert: str = None, effect: str = None, transitiontime: int = None, scene: str = None,
             bri_inc: int = None, hue_inc: int = None, sat_inc: int = None, xy_inc: list[float, float] = None,
             ct_inc: int = None) -> None:
-        val = {}
-        if on is not None:
-            val["on"] = on
-        if bri is not None:
-            val["bri"] = bri
-        if hue is not None:
-            val["hue"] = hue
-        if sat is not None:
-            val["sat"] = sat
-        if xy is not None:
-            val["xy"] = xy
-        if ct is not None:
-            val["ct"] = ct
-        if alert is not None:
-            val["alert"] = alert
-        if effect is not None:
-            val["effect"] = effect
-        if transitiontime is not None:
-            val["transitiontime"] = transitiontime
-        if scene is not None:
-            val["scene"] = scene
-        if bri_inc is not None:
-            val["bri_inc"] = bri_inc
-        if hue_inc is not None:
-            val["hue_inc"] = hue_inc
-        if sat_inc is not None:
-            val["sat_inc"] = sat_inc
-        if xy_inc is not None:
-            val["xy_inc"] = xy_inc
-        if ct_inc is not None:
-            val["ct_inc"] = ct_inc
-        self.set_data("action", val)
+        self.set_data("action", construct_dict(on=on,bri=bri, hue=hue, sat=sat, xy=xy, ct=ct, alert=alert,
+                                               effect=effect, transitiontime=transitiontime, scene=scene,
+                                               bri_inc=bri_inc, hue_inc=hue_inc, sat_inc=sat_inc, xy_inc=xy_inc,
+                                               ct_inc=ct_inc))
 
 
 class GroupPresence(HueObject):
@@ -333,15 +305,6 @@ class Group(HueObject):
 
     def set(self, name: str = None, lights: list[str] = None, sensors: list[str] = None, group_class: str = None,
             recycle: bool = None):
-        val = {}
-        if name is not None:
-            val["name"] = name
-        if lights is not None:
-            val["lights"] = lights
-        if sensors is not None:
-            val["sensors"] = sensors
-        if group_class is not None:
-            val["class"] = group_class
-        if recycle is not None:
-            val["recycle"] = recycle
+        val = construct_dict(name=name, lights=lights, sensors=sensors, recycle=recycle)
+        val["class"] = group_class
         self.set_data("", val)

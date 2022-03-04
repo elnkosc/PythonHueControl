@@ -1,4 +1,4 @@
-from pythonhuecontrol.v1 import HueObject, map_from_dict
+from pythonhuecontrol.v1 import HueObject, map_from_dict, construct_dict
 
 
 class SceneAppData(HueObject):
@@ -11,7 +11,7 @@ class SceneAppData(HueObject):
         return self.map_from_raw("appdata", "data")
 
 
-class SceneLightState:
+class SceneLightStateItem:
     def __init__(self, state: dict = None, on: bool = None, bri: int = None, hue: int = None, sat: int = None,
                  xy: list[float, float] = None, ct: int = None, effect: str = None, transitiontime: int = None) -> None:
         if state is not None:
@@ -54,18 +54,44 @@ class SceneLightState:
         return result
 
 
-class SceneLightStateList(HueObject):
-    def __getitem__(self, key: str) -> SceneLightState:
-        return SceneLightState(state=self.map_from_raw("lightstates", key))
+class SceneLightStateList:
+    def __init__(self) -> None:
+        self._light_state_list = {}
 
-    def __setitem__(self, key: str, value: SceneLightState) -> None:
+    def __getitem__(self, key: str) -> SceneLightStateItem:
+        return self._light_state_list[key]
+
+    def __delitem__(self, key: str) -> None:
+        del self._light_state_list[key]
+
+    def __setitem__(self, key: str, value: SceneLightStateItem) -> None:
+        self._light_state_list[key] = value
+
+    def __len__(self) -> int:
+        return len(self._light_state_list)
+
+    def __contains__(self, key: str) -> bool:
+        if key in self._light_state_list:
+            return True
+        else:
+            return False
+
+    def as_dict(self) -> dict:
+        return self._light_state_list
+
+
+class SceneLightStates(HueObject):
+    def __getitem__(self, key: str) -> SceneLightStateItem:
+        return SceneLightStateItem(state=self.map_from_raw("lightstates", key))
+
+    def __setitem__(self, key: str, value: SceneLightStateItem) -> None:
         self.set_data("lightstates/" + key, value.as_dict())
 
 
 class Scene(HueObject):
     def __init__(self, identity: str, uri: str, raw: dict = None) -> None:
         self._appdata = SceneAppData(identity, uri, raw)
-        self._lightstates = SceneLightStateList(identity, uri, raw)
+        self._lightstates = SceneLightStates(identity, uri, raw)
         super().__init__(identity, uri, raw)
 
     @property
@@ -125,13 +151,8 @@ class Scene(HueObject):
         return self._appdata
 
     @property
-    def lightstates(self) -> SceneLightStateList:
+    def lightstates(self) -> SceneLightStates:
         return self._lightstates
 
     def set(self, name: str = None, lights: list[str] = None) -> None:
-        val = {}
-        if name is not None:
-            val["name"] = name
-        if lights is not None:
-            val["lights"] = lights
-        self.set_data("", val)
+        self.set_data("", construct_dict(name=name, lights=lights))
