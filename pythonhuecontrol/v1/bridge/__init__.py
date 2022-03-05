@@ -42,32 +42,32 @@ def create_bridge_user(uri: str, device_type: str, generate_client_key: bool = F
 
 class Bridge(HueObject):
     @property
-    def light_ids(self) -> dict:
-        return self.map_from_raw("lights")
+    def light_ids(self) -> list[str]:
+        return [light_id for light_id in self.map_from_raw("lights")]
 
     @property
-    def group_ids(self) -> dict:
-        return self.map_from_raw("groups")
+    def group_ids(self) -> list[str]:
+        return [group_id for group_id in self.map_from_raw("groups")]
 
     @property
-    def sensor_ids(self) -> dict:
-        return self.map_from_raw("sensors")
+    def sensor_ids(self) -> list[str]:
+        return [sensor_id for sensor_id in self.map_from_raw("sensors")]
 
     @property
-    def scene_ids(self) -> dict:
-        return self.map_from_raw("scenes")
+    def scene_ids(self) -> list[str]:
+        return [scene_id for scene_id in self.map_from_raw("scenes")]
 
     @property
-    def rule_ids(self) -> dict:
-        return self.map_from_raw("rules")
+    def rule_ids(self) -> list[str]:
+        return [rule_id for rule_id in self.map_from_raw("rules")]
 
     @property
-    def schedule_ids(self) -> dict:
-        return self.map_from_raw("schedules")
+    def schedule_ids(self) -> list[str]:
+        return [schedule_id for schedule_id in self.map_from_raw("schedules")]
 
     @property
-    def resourcelinks_ids(self) -> dict:
-        return self.map_from_raw("resourcelinks")
+    def resourcelinks_ids(self) -> list[str]:
+        return [resourcelinks_id for resourcelinks_id in self.map_from_raw("resourcelinks")]
 
     @property
     def config(self) -> Configuration:
